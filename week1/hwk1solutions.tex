@@ -35,7 +35,7 @@
  
 \title{Stat 8003, Homework 1}%replace X with the appropriate number
 \author{Group G: David Dobor, Andrew Schneider,  Abdulsalam Hdadi 
-\footnote{Authors listed in random order. The random order was generated using \texttt{R}'s \texttt{sample()} function}
+\footnote{Authors are listed in random order. The random order was generated using \texttt{R}'s \texttt{sample()} function}
 \\ %replace with your name
 } %if necessary, replace with your course title
  
@@ -47,8 +47,16 @@
 Let \blditA $ $ and \blditB $ $ be two matrices defined as:
 
 \begin{equation*}
-A = \begin{pmatrix}  1 & 2 & 3\\  2 & 4 & 6\\  3 & 6 & 9\end{pmatrix},
-B = \begin{pmatrix}  2 & 0\\  1 & 3\\ -2 & 1\end{pmatrix}
+A = \begin{pmatrix}
+  1 & 2 & 3\\
+  2 & 4 & 6\\
+  3 & 6 & 9
+\end{pmatrix},
+B = \begin{pmatrix}
+  2 & 0\\
+  1 & 3\\
+ -2 & 1
+\end{pmatrix}
 \end{equation*}
 
 Calculate:
@@ -59,7 +67,8 @@ Calculate:
 \end{itemize}
 
 Use R to check your calculation.
- \end{question}
+
+ \end{question}
  
  
  \textbf{\emph{Answer:} }
@@ -67,7 +76,11 @@ Use R to check your calculation.
 `By hand` calculation yields:
 \begin{equation*}
 \blditC  = \blditA \blditB = 
-\begin{pmatrix}  -2 & 9\\  -4 & 18\\  -6 & 27\end{pmatrix}
+\begin{pmatrix}
+  -2 & 9\\
+  -4 & 18\\
+  -6 & 27
+\end{pmatrix}
 \end{equation*}
  For example, the entry in the third row and second column of \blditC, $c_{3,2}$, is calculated as:
  
@@ -79,10 +92,19 @@ Use R to check your calculation.
 
 \begin{equation*} 
 \blditB^T \blditA= 
- \begin{pmatrix}  2 & 1 & -2\\  0 & 3 & 1\\\end{pmatrix}
- \begin{pmatrix}  1 & 2 & 3\\  2 & 4 & 6\\  3 & 6 & 9\end{pmatrix} = 
- \begin{pmatrix}   -2 & -4 & -6\\
-    9  & 18 & 27\end{pmatrix}
+ \begin{pmatrix}
+  2 & 1 & -2\\
+  0 & 3 & 1\\
+\end{pmatrix}
+ \begin{pmatrix}
+  1 & 2 & 3\\
+  2 & 4 & 6\\
+  3 & 6 & 9
+\end{pmatrix} = 
+ \begin{pmatrix}
+   -2 & -4 & -6\\
+    9  & 18 & 27
+\end{pmatrix}
  \end{equation*}
  whose entry in the first row second column, for example, is calculated as:
   \begin{equation*}
@@ -165,7 +187,7 @@ We have:
  & = \blditX (\blditX^T \blditX)^{-1}\blditX^T \blditX (\blditX^T \blditX)^{-1}\blditX^T \\
  & = \blditX (\blditX^T \blditX)^{-1}(\blditX^T \blditX) (\blditX^T \blditX)^{-1}\blditX^T 
 \end{align*}
-Noting that in the middle term reduces to:
+Noting that in the middle term reduces to\footnote{The inverse will exist because $\blditX$ has rank $m$ ($\blditX^T \blditX$ is $m \times m$ of full rank).}:
 \begin{equation*}
 (\blditX^T \blditX) (\blditX^T \blditX)^{-1} = \bldI
 \end{equation*}
@@ -179,7 +201,11 @@ We end up with:
 \bigskip
 %%%%%%%% Question 4 %%%%%%%%%
 \begin{question}{1. 4} 
-Given matrix $\blditA =  \begin{pmatrix}  2 & -1 & 0\\  -1 & 2 & -1\\  0 & -1 & 2\end{pmatrix} $. Is \blditA $ $ positive-definite? Prove it or disprove it.
+Given matrix $\blditA =  \begin{pmatrix}
+  2 & -1 & 0\\
+  -1 & 2 & -1\\
+  0 & -1 & 2
+\end{pmatrix} $. Is \blditA $ $ positive-definite? Prove it or disprove it.
 \end{question}
 
 \textbf{\emph{Answer:} }
@@ -191,7 +217,11 @@ Yes, it is positive-definite:
 \begin{pmatrix}
 x_1 & x_2 & x_3
 \end{pmatrix} 
-\begin{pmatrix}  2 & -1 & 0\\  -1 & 2 & -1\\  0 & -1 & 2\end{pmatrix} 
+\begin{pmatrix}
+  2 & -1 & 0\\
+  -1 & 2 & -1\\
+  0 & -1 & 2
+\end{pmatrix} 
 \begin{pmatrix}
 x_1 \\ 
 x_2 \\
@@ -259,25 +289,25 @@ The Gamma $\Gamma(\alpha)$ function is defined as:
            $$
            \Gamma(2) = 1 \cdot \Gamma(1) = 1 \cdot 1 = 1
            $$
-           In particular, from part 1, when $\alpha$ is some integer $n$  we have:
+           In particular, from part 1, when $\alpha$ is some positive integer $n$,  we have\footnote{For the mathematical hair-splitters, mathematical induction can be used to formally prove this result. For the rest of the world, however, this argument should be convincing enough, we hope. }:
            $$
            \Gamma(n+1) = n \Gamma(n) = n (n -1) \Gamma(n - 1) =  n \cdot (n - 1) \cdots 2 \cdot 1 = n!
            $$
 
-\item We'll do this step-by-step. First, using the substitution $y = \frac{1}{x}$ and appropriately substituting the limits of integration (and because $\mathrm{d}(\frac{1}{x}) = 
-                                -\frac{1}{x^2}\mathrm{d}x$) , we have
+\item We'll do this step-by-step. First, using the substitution $y = \frac{1}{x}$, we have that $\mathrm{d}y = \mathrm{d}(\frac{1}{x}) = 
+                                -\frac{1}{x^2}\mathrm{d}x$ (also, since $y \text{ changes from } \infty \to 0 \text{ as } x \text{ changes from } 0 \to \infty$ we appropriately flip the sign in what follows). Thus:
                                 \begin{align*}
                                 \int_0^\infty x^{-\alpha - 1}\mathrm{e}^{-\frac{\beta}{x}}\,\mathrm{d}x &=
-                                \int_0^\infty (1/x)^{(\alpha + 1)} \mathrm{e}^{-\frac{\beta}{x}} (1/x)^{-2}\mathrm{d}(1/x)\\
-                                &= \int_0^\infty (1/x)^{(\alpha - 1)} \mathrm{e}^{-\frac{\beta}{x}} \mathrm{d}(1/x)\\
-                                &= \int_\infty^0 y^{(\alpha - 1)} \mathrm{e}^{-\beta y} \mathrm{d}(y) = -\int_0^\infty y^{(\alpha - 1)} \mathrm{e}^{-\beta y} \mathrm{d}y
+                                -\int_0^\infty (1/x)^{(\alpha + 1)} \mathrm{e}^{-\frac{\beta}{x}} (1/x)^{-2}\mathrm{d}(1/x)\\
+                                &= -\int_0^\infty (1/x)^{(\alpha - 1)} \mathrm{e}^{-\frac{\beta}{x}} \mathrm{d}(1/x)\\
+                                &= -\int_\infty^0 y^{(\alpha - 1)} \mathrm{e}^{-\beta y} \mathrm{d}(y) = \int_0^\infty y^{(\alpha - 1)} \mathrm{e}^{-\beta y} \mathrm{d}y
                                 \end{align*}
                                 
                                 Now we use the substitution $z = \beta y$. We have  $\mathrm{d}y = (1/\beta) \mathrm{d}z$. So
                                 \begin{align*}     
-                                    -\int_0^\infty y^{(\alpha - 1)} \mathrm{e}^{-\beta y} \mathrm{d}y &=  -\int_0^\infty (z/\beta)^{(\alpha - 1)}  \mathrm{e}^{(-z)} (1/\beta)  \mathrm{d}z    \\
-                                  &= -(1/\beta)^{\alpha - 1} (1/\beta) \int_0^\infty   z^{\alpha - 1}\mathrm{e}^{-z}\,\mathrm{d}z \\
-                                  &= -\beta^{-\alpha} \Gamma(\alpha)     
+                                    \int_0^\infty y^{(\alpha - 1)} \mathrm{e}^{-\beta y} \mathrm{d}y &=  \int_0^\infty (z/\beta)^{(\alpha - 1)}  \mathrm{e}^{(-z)} (1/\beta)  \mathrm{d}z    \\
+                                  &= (1/\beta)^{\alpha - 1} (1/\beta) \int_0^\infty   z^{\alpha - 1}\mathrm{e}^{-z}\,\mathrm{d}z \\
+                                  &= \beta^{-\alpha} \Gamma(\alpha)     
                                 \end{align*}
 
          
