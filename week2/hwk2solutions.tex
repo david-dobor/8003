@@ -72,8 +72,8 @@ Suppose that $X$ is a discrete random variable with $P (X= 0) = 0.25, \\P (X = 1
 
 \bigskip
 \bigskip
- %%%%%%%% Question 1 %%%%%%%%%
-\begin{question}{2.1} A certain type of cancer is known to be present in 2 percent of the population of males in their fifties.
+ %%%%%%%% Question 2 %%%%%%%%%
+\begin{question}{2.2} A certain type of cancer is known to be present in 2 percent of the population of males in their fifties.
 A test for the disease is advertised by a pharmaceutical company to be 3\% false negative and 1\% false positive.
 \begin{enumerate}
 \item{ Compute the probability that you have cancer if you are tested positive.}
@@ -113,7 +113,31 @@ x &< 0.002199546
 Thus, the false positive rate should be smaller than about two in a thousand.
 
 
+\bigskip
+\bigskip
+ %%%%%%%% Question 3 %%%%%%%%%
+\begin{question}{2.3} Suppose there is a continuous random variable $X$ with \texttt{cdf} $F(x) $. Let $ Y = F(X) $. What is the distribution of $Y$? 
+\end{question}
 
+ \textbf{\emph{Answer:} } 
+
+$$
+P ( Y \leq y ) = P( F(X) \leq y) = P( X \leq F^{-1}(y) )
+$$
+
+//TODO uniform? think thru. explain.
+\bigskip
+\bigskip
+ %%%%%%%% Question 4 %%%%%%%%%
+\begin{question}{2.4} 
+Generate 10,000 random samples from a distribution with the \texttt{pdf} $f(x) = 3 x^2 1(0 < x < 1) $. State your steps and program it in \texttt{R}. After generating these random numbers, plot its density and compare it with the actual pdf function. (Hint: Use the result from Problem 4.)
+
+\end{question}
+
+
+ \textbf{\emph{Answer:} } 
+ 
+ // TODO: clarify which problem 4. Or does it mean previous problem - problem 3?
 
 \end{document}
 %Note 1: The * tells LaTeX not to number the lines.  If you remove the *, be sure to remove it below, too.
