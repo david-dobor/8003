@@ -15,7 +15,7 @@ plotMyCdf <- function(x, F_x ){
     segments(c(-1, x[]), c(0, F_x[]), c(x[], x[length(x)]+2), c(0, F_x[]), lwd=3, col="blue")
     points(x, F_x, pch=19, col="blue")
 
-title(expression(paste("The CDF of ", X)))
+    title(expression(paste("The CDF of ", X)))
 
 }
 
