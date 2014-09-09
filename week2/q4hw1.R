@@ -30,6 +30,7 @@ my_rands <- runif(n)^(1/3)
 hist(my_rands)
 g_hist <- ggplot()
 g_hist <- g_hist + geom_histogram(aes(x=my_rands),  fill="slategray2", color="grey60",size=0.2)
+g_hist <- g_hist + coord_cartesian(xlim=c(-0.5,1.5))
 # add the title and axes labels
 g_hist <- g_hist +
     xlab("X") +
