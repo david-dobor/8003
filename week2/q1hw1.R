@@ -1,11 +1,13 @@
-#### Solutions to Homework 2 ####
+########## Solutions to Homework 2 ##########
+             #### Problem 4 ####
+         ## @author: David Dobor ##
 
 ## Problem 1
 x <- 0:3                          # given support of r.v X
 p_x <- c(0.25, 0.125, 0.125, 0.5) # and given its pmf
 F_x <- cumsum(p_x)                # compute the cdf of X
 
-####create a data frame that stores coordinats of the points to plot
+#### create a data frame that stores coordinats of the points to plot
 coords <- data.frame(x=numeric(), y=numeric()) 
 coords <- rbind(coords, c(-2, 0))
 coords <- rbind(coords, c(x[1], 0))
