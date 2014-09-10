@@ -67,7 +67,7 @@ Suppose that $X$ is a discrete random variable with $P (X= 0) = 0.25, \\P (X = 1
    \end{cases}
 \]
  
- This right-continuous function changes it's value at each of it's `jump points' by exactly the value of it's \texttt{pmf} at the same point. For example, the jump at point $ x = 2 $ is $0.5 - 0.375 = 0.125$, which is the same as the value of \texttt{pmf} at  $ x = 2$: $P (X = 2) = 0.125.$ 
+ This right-continuous function changes it's value at each of it's `jump points' by exactly the value of it's \texttt{pmf} at the same point. For example, the jump at point $ x = 2 $ is $0.5 - 0.375 = 0.125$, which is the same as the value of the \texttt{pmf} at  $ x = 2$: $P (X = 2) = 0.125.$ 
  
  This \texttt{cdf} looks like this:
  
@@ -140,17 +140,17 @@ That is, $Y$ has to be uniformly distributed over $[0, 1]$. %: $Y \tilda U[0, 1]
 \bigskip
  %%%%%%%% Question 4 %%%%%%%%%
 \begin{question}{2.4} 
-Generate 10,000 random samples from a distribution with the \texttt{pdf} $f(x) = 3 x^2 1(0 < x < 1) $. State your steps and program it in \texttt{R}. After generating these random numbers, plot its density and compare it with the actual pdf function. (Hint: Use the result from \color{Red}{Problem 4? (should this be the previous problem, problem 3?}.)
+Generate 10,000 random samples from a distribution with the \texttt{pdf} $f(x) = 3 x^2 1(0 < x < 1) $. State your steps and program it in \texttt{R}. After generating these random numbers, plot its density and compare it with the actual pdf function. (Hint: Use the result from Problem 3.)
 
 \end{question}
 
 
-\textbf{\color{TealBlue}\emph{Answer:} } To generate random samples from the random variable $X$ with \texttt{pdf} $f(x) = 3 x^2 1(0 < x < 1) $, we 
+\textbf{\color{TealBlue}\emph{Answer:} } To generate random samples from a distribution with the \texttt{pdf} $f(x) = 3 x^2 1(0 < x < 1) $, we 
 
 \begin{enumerate}
 \item Compute the \texttt{cdf} of $X$, $F(X)$. This is simply $u = F(x) = x^3$ on the interval from $[0,1]$ ( and it's $1$ whenever $x \geq 1$ and $0$ whenever $x \leq 0$)
 \item Then find its inverse: $F^{-1}(u) = u^{1/3}$ (where $u$ ranges from $0$ to $1$)
-\item Finally, we generate uniform \texttt{r.v.}s and transform them with this $F^{-1}$ to obtain the needed variates
+\item Finally, we generate uniform \texttt{r.v.}s and transform them with this $F^{-1}$ to obtain the needed samples
 \end{enumerate} 
  The \texttt{R} code that performs the above steps and generates the figures below can be found at \url{https://github.com/david-dobor/8003/blob/master/week2/q4hw1.R} 
  
@@ -163,7 +163,6 @@ Generate 10,000 random samples from a distribution with the \texttt{pdf} $f(x) =
 \includegraphics[width=10cm, height=8cm]{histogram}
 \end{center}
 
-The shapes are similar, which is reassuring.
 \end{document}
 %Note 1: The * tells LaTeX not to number the lines.  If you remove the *, be sure to remove it below, too.
 %Note 2: Inside the  environment, you do not want to use $-signs.  The reason for this is that this is already a math environment. This is why we have to include \text{} around any text inside the align environment.

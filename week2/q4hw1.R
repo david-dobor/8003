@@ -35,11 +35,11 @@ g_hist <- g_hist + coord_cartesian(xlim=c(-0.5,1.5))
 g_hist <- g_hist +
     xlab("X") +
     ylab("Frequency") +
-    ggtitle("Histogram of 10, 000 random variates of X")
+    ggtitle("Histogram of 10, 000 Random Samples from X")
 print(g_hist)
 
 ### finally, save the plots
-ggsave("./histogram.png", dpi=300)
+#ggsave("./histogram.png", dpi=300)
 
 
 require(ggthemes)
