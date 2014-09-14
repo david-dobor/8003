@@ -200,6 +200,53 @@ and trigamma function  $\psi_1 (x) $, where  $\psi (x) = (\log \Gamma(x))^{'}$ a
 
  \textbf{\color{TealBlue}\emph{Answer:} } 
 
+We first derive the distribution of $\log X$:
+
+
+\bigskip
+
+\textbf{\color{TealBlue}\emph{Distribution of Log of Gamma:} } 
+\bigskip
+
+Let $Y = \log (X)$ where  $X\sim\Gamma(\alpha,\beta)$.  We want the distribution of $Y$. 
+
+In the following notation, use the indicator functions to easily track the ranges of the variables during the transformation: 
+$$ f_X(x) = \frac{1}{\beta^{\alpha}\Gamma(\alpha)} \;\; x^{\alpha-1} e^{-x/\beta} \, 1_{(0,\infty)}(x) \, . $$
+
+We'll use the following well known theorem about computing the density of a transform, $g$, of some random variable $X$. Very loosely put, if $g(X) = Y$ and $g$ has an \emph{inverse}, call it $h(Y)$, then the \texttt{pdf} of $Y$ is:
+$$
+f_Y(y) = f_X(h(y)) |h'(y)|
+$$
+
+So here, denoting the inverse of $Y = \log (X)$ by $h(Y)$, we have $ X=h(Y)=\mathrm{e}^Y$ and $h'(y) = \mathrm{e}^{y}$. Therefore:
+\begin{align*}
+ f_Y(y) &= f_X(h(y)) |h'(y)| \\
+ &= \frac{1}{\beta^\alpha \Gamma(\alpha)} \left(\mathrm{e}^{\alpha (y - 1)} - \mathrm{e}^{-\mathrm{e}^y/\beta}\right)\,|\mathrm{e}^{y}| \,\,\,1_{(-\infty,\infty)}(y) \\
+  &= \frac{1}{\beta^\alpha \Gamma(\alpha)} \left(\mathrm{e}^{\alpha y} - \mathrm{e}^{-\mathrm{e}^y/\beta}\right)\,\mathrm{e}^{-y}\mathrm{e}^{y} \,\,\,1_{(-\infty,\infty)}(y) \\
+ &= \frac{1}{\beta^\alpha \Gamma(\alpha)} \;\; \mathrm{e}^{\left(\alpha y - e^y/\beta\right)}\,1_{(-\infty,\infty)}(y) \\
+\end{align*}
+
+OK, so far so good. We found the \texttt{pdf} of \texttt{Log-Gamma}. 
+
+Now we find its moment generating function. By definition:
+$$
+M_Y(t) = \int_{-\infty}^{+\infty} \mathrm{e}^{ty} \frac{1}{\beta^\alpha \Gamma(\alpha)} \;\; \mathrm{e}^{\left(\alpha y - e^y/\beta\right)} dy
+$$
+To integrate this we use the same trick of leaving inside the integral sign the part of the function that integrates to 1, getting constants appropriately out of the integral. Luckily, this can be done here:
+\begin{align*}
+M_Y(t) &= \frac{1}{\beta^\alpha \Gamma(\alpha)} \int_{-\infty}^{+\infty} \mathrm{e}^{ty} \;\; \mathrm{e}^{\left(\alpha y - e^y/\beta\right)} dy\\
+&= \frac{1}{\beta^\alpha \Gamma(\alpha)} \int_{-\infty}^{+\infty} \mathrm{e}^{\left(ty +\alpha y - e^y/\beta\right)} dy\\
+&= \frac{\Gamma(\alpha + t)}{\Gamma(\alpha) \beta^\alpha \Gamma(\alpha + t)} \int_{-\infty}^{+\infty} \mathrm{e}^{y \left(t +\alpha \right) - e^y/\beta} dy\\
+&= \frac{\Gamma(\alpha + t)}{\Gamma(\alpha)}  \int_{-\infty}^{+\infty} \frac{1} {\beta^\alpha \Gamma(\alpha + t)}\mathrm{e}^{y \left(t +\alpha \right) - e^y/\beta} dy\\
+&= \frac{\Gamma(\alpha + t)}{\Gamma(\alpha)} 
+\end{align*}
+
+Where the last equality follows because the thing inside the integral is a \texttt{Log-Gamma pdf} and integrates to 1.
+
+Next, by definition, the \emph{cumulant generating function} is just the log of this:
+$$
+\log M_Y(t) = \log \left(\frac{\Gamma(\alpha + t)}{\Gamma(\alpha)} \right)
+$$
 
 
 
