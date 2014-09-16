@@ -45,10 +45,12 @@
  
 \title{My Notes About $log$ of Gamma}%replace X with the appropriate number
 \author{By David Dobor} %if necessary, replace with your course title
+%\date{\vspace{-5ex}}
+\date{}
  
 \maketitle
 
- A random variable $X$ is said to have a gamma distribution with parameters $(\alpha, \beta)$, denoted by  $\Gamma(\alpha, \beta)$, if its  pdf is given by:
+ A random variable $X$ is said to have a gamma distribution with parameters $(\alpha, \beta)$, denoted by  $\Gamma(\alpha, \beta)$, if its  \texttt{pdf} is given by:
 $$
 		f(x) = \frac{1}{\Gamma({\alpha})} \cdot \frac{1}{\beta} \cdot  \left( \frac{x}{\beta}\right)^{\alpha - 1} \cdot \mathrm{e}^{-\frac{x}{\beta}} \cdot\, 1_{(0,\infty)}(x) \,\,\, \text{where} \;\; \alpha, \beta > 0
 $$
@@ -80,14 +82,14 @@ So here, denoting the inverse of $Y = \log (X)$ by $h(Y)$, we have $ X=h(Y)=\mat
  &= \frac{1}{\beta^\alpha \Gamma(\alpha)} \;\; \mathrm{e}^{\left(\alpha y - e^{y/\beta}\right)}\,1_{(-\infty,\infty)}(y) \\
 \end{align*}
 
-This expression  is a valid \texttt{pdf} -- it integrates to 1. 
+This expression  is a valid \texttt{pdf} -- it integrates to 1 - and is said to have a  \texttt{Log-Of-Gamma pdf} with parameters $(\alpha, \beta)$.
 
 \bigskip 
 \bigskip 
 %%%%%%%%%%%%%%% Moments of Log-Of-Gamma %%%%%%%%%%%%%%%%%%%%%%
 \subsection*{\color{TealBlue}\emph{Moments of Log Of Gamma}}
 
-We now find the Moment Generating Function (\texttt{MGF}) of $\Gamma(\alpha, \beta)$. By definition:
+We now find the Moment Generating Function (\texttt{MGF}) of \texttt{Log-Of-Gamma}$(\alpha, \beta)$. By definition:
 $$
 M_Y(t) = \int_{-\infty}^{+\infty} \mathrm{e}^{ty} \frac{1}{\beta^\alpha \Gamma(\alpha)} \;\; \mathrm{e}^{\left(\alpha y - e^{y\beta}\right)} dy
 $$
@@ -100,7 +102,7 @@ M_Y(t) &= \frac{1}{\beta^\alpha \; \Gamma(\alpha)} \int_{-\infty}^{+\infty} \mat
 &= \frac{\beta^t \; \Gamma(\alpha + t)}{\Gamma(\alpha)} 
 \end{align*}
 
-Where the last equality follows because the thing inside the integral is the \texttt{Log-Of-Gamma pdf} we derived above and it integrates to 1.
+Where the last equality follows because the thing inside the integral is the \texttt{Log-Of-Gamma pdf} derived above and integrates to 1.
 \bigskip
 $$\text{\emph{In Short:}}$$
 $$
@@ -146,17 +148,17 @@ $$
 \boxed{(S_Y(t))^{'} =  \log(\beta) +\psi(\alpha +t)}
 $$
 
-One conclusion is that if $Y$ is \texttt{Log-Of-Gamma}, its expectation is given by:
+We \emph{conclude} that if $Y$ is \texttt{Log-Of-Gamma}$(\alpha, \beta)$ distributed, then its expectation is given by:
 $$
  \boxed{\mathrm{E}\, Y =  \log(\beta) +\psi(\alpha)}
 $$
-To find what the variance of $Y$ is, we we look at the second derivative $(S_Y(t))^{''}$ and evaluate it at $t=0$.
+To find the variance of $Y$, we we look at the second derivative, $(S_Y(t))^{''}$, and evaluate it at $t=0$.
 \begin{align*}
 (S_Y(t))^{''} &= (\log(\beta) +\psi(\alpha +t))^{'}\\
 &= \psi^{'}(\alpha +t)
 \end{align*}
 
-The derivative of \texttt{digamma} is the so-called \texttt{trigamma} function. Thus
+The derivative of \texttt{digamma} is the so-called \texttt{trigamma} function:
 %\begin{align*}
 $$
 \boxed{Var(Y) = \psi^{''}(\alpha) = \text{\texttt{trigamma($\alpha$)}}}
