@@ -91,7 +91,7 @@ This expression  is a valid \texttt{pdf} -- it integrates to 1 - and is said to 
 
 We now find the Moment Generating Function (\texttt{MGF}) of \texttt{Log-Of-Gamma}$(\alpha, \beta)$. By definition:
 $$
-M_Y(t) = \int_{-\infty}^{+\infty} \mathrm{e}^{ty} \frac{1}{\beta^\alpha \Gamma(\alpha)} \;\; \mathrm{e}^{\left(\alpha y - e^{y\beta}\right)} dy
+M_Y(t) = \int_{-\infty}^{+\infty} \mathrm{e}^{ty} \frac{1}{\beta^\alpha \Gamma(\alpha)} \;\; \mathrm{e}^{\left(\alpha y - e^{y/\beta}\right)} dy
 $$
 To integrate this we use an old trick: we try to leave inside the integral sign the part of the function that integrates to 1 (this is often an easily recognizeable \texttt{pdf}); we then pull the constants that get in the way of making this integral equal to 1 out of the integral sign. Luckily, this can be done here:
 \begin{align*}
