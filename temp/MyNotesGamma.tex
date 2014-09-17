@@ -1,0 +1,177 @@
+ 
+\documentclass[12pt]{article}
+ %author David Dobor
+\usepackage[margin=1in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb}
+ \usepackage{graphicx}
+ \usepackage{multirow}
+\usepackage[scaled]{helvet}
+\usepackage{hyperref}
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\usepackage[T1]{fontenc}
+\usepackage{palatino}
+\usepackage{enumerate}
+%\renewcommand*\familydefault{\sfdefault} %% Only if the base font of the document is to be sans serif
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+
+
+\newcommand{\blditA}{\textbf{\textit{A}}}
+\newcommand{\blditB}{\textbf{\textit{B}}}
+\newcommand{\blditC}{\textbf{\textit{C}}}
+\newcommand{\blditP}{\textbf{\textit{P}}}
+\newcommand{\blditQ}{\textbf{\textit{Q}}}
+\newcommand{\bldI}{\textbf{I}}
+\newcommand{\blditX}{\textbf{\textit{X}}}
+ 
+\newenvironment{theorem}[2][Theorem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{lemma}[2][Lemma]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{exercise}[2][Exercise]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{problem}[2][Problem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{question}[2][Question]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{answer}[2][Answer]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+
+\begin{document}
+ \renewcommand{\arraystretch}{1.3}
+
+ 
+\title{My Notes About $\Gamma$}%replace X with the appropriate number
+\author{By M. Y. Self} %if necessary, replace with your course title
+ 
+\maketitle
+ A random variable $X$ is said to have a gamma distribution with parameters $(\alpha, \beta)$, denoted by  $\Gamma(\alpha, \beta)$, if its  pdf is given by:
+$$
+		f(x) = \frac{1}{\Gamma({\alpha})} \cdot \frac{1}{\beta} \cdot  \left( \frac{x}{\beta}\right)^{\alpha - 1} \mathrm{e}^{-\frac{x}{\beta}}
+$$
+
+where the number $\Gamma(\alpha)$ is called the gamma fuction and is computed as $\int_0^{\infty} \mathrm{e}^{-y} y^{\alpha - 1} dy$. (This reduces to the factorial function for integer $\alpha$: $\Gamma(\alpha) = \alpha!$)
+
+
+\bigskip
+
+ 
+ \textbf{\color{TealBlue}\emph{First moment, the expectation, by direct integration:} } 
+\begin{align*}
+E[X] &= \int_0^{\infty}  \frac{1}{\Gamma({\alpha})} \cdot \frac{1}{\beta} \cdot x  \left( \frac{x}{\beta}\right)^{\alpha - 1} \mathrm{e}^{-\frac{x}{\beta}} dx \\
+&=   \frac{1}{\Gamma({\alpha})} \int_0^{\infty} \left( \frac{x}{\beta}\right)^{\alpha} \mathrm{e}^{-\frac{x}{\beta}} dx \\
+&=   \frac{\beta}{\Gamma({\alpha})} \int_0^{\infty} \frac{1}{\beta} \left( \frac{x}{\beta}\right)^{\alpha} \mathrm{e}^{-\frac{x}{\beta}} dx \\
+&=   \frac{ \Gamma({\alpha} + 1) \cdot \beta }{\Gamma({\alpha})} \int_0^{\infty} \frac{1}{\Gamma(\alpha + 1)} \frac{1}{\beta} \left( \frac{x}{\beta}\right)^{\alpha} \mathrm{e}^{-\frac{x}{\beta}} dx \\   
+&=  \frac{ \Gamma({\alpha} + 1) \cdot \beta }{\Gamma({\alpha})}  = \alpha\beta
+\end{align*}
+where the last integrand is $1$ because it itself is a gamma pdf with parameters $(\alpha + 1, \beta)$. 
+
+
+\bigskip
+
+ \textbf{\color{TealBlue}\emph{Second moment, by direct integration:} } 
+\begin{align*}
+E[X^2] &= \int_0^{\infty}  \frac{1}{\Gamma({\alpha})} \cdot \frac{1}{\beta} \cdot x^2  \left( \frac{x}{\beta}\right)^{\alpha - 1} \mathrm{e}^{-\frac{x}{\beta}} dx \\
+&=   \frac{\Gamma(\alpha + 2) \cdot \beta^2}{\Gamma({\alpha})} \int_0^{\infty} \frac{1}{\Gamma(\alpha + 2)} \frac{1}{\beta} \left( \frac{x}{\beta}\right)^{\alpha +1 } \mathrm{e}^{-\frac{x}{\beta}} dx \\
+&=  \frac{ \Gamma({\alpha} + 2) \cdot \beta^2 }{\Gamma({\alpha})}  = \alpha (\alpha + 1) \beta^2
+\end{align*}
+
+\textbf{\color{TealBlue}\emph{The Variance is then:} } 
+$$
+Var(X) = \alpha (\alpha + 1) \beta^2 - (\alpha \beta)^2 = \alpha \beta^2
+$$
+
+\textbf{\color{TealBlue}\emph{Moments from the Moment Generating Function:} } 
+\begin{align*}
+M_X(t) &=  \frac{1}{\Gamma(\alpha) \cdot \beta^{\alpha}} \int_0^{\infty} \mathrm{e}^{tx} x^{\alpha - 1} \mathrm{e}^{-x/\beta} dx\\
+&=  \frac{1}{\Gamma(\alpha) \cdot \beta^{\alpha}} \int_0^{\infty}  x^{\alpha - 1} \mathrm{e}^{ - x/ \frac{\beta}{1 - \beta t }} dx \\
+&= .... \text{\ \ same tricks as before...}\\
+&= \left( \frac{1} { 1 - \beta t } \right)^{\alpha}
+\end{align*}
+
+now differentiate this appropriate number of times and evaluate that derivative at $t = 0$ to get the moments: differentiate once to get the expectation, twice to get the second moment, etc.. E.g.:
+\begin{align*}
+(M_X(t))^{'} = \frac{\alpha \beta} { (1 - \beta t)^{\alpha + 1}}  
+\end{align*}
+\begin{align*}
+(M_X(0))^{'} =  \frac{\alpha \beta} { (1 - \beta t)^{\alpha + 1}}  \Big | _{t=0} = \alpha \beta
+\end{align*}
+
+\begin{align*}
+(M_X(0))^{''} =  \frac{\alpha (\alpha + 1) \beta^2} { (1 - \beta t)^{\alpha + 2}}  \Big | _{t=0} = \alpha (\alpha + 1)\beta^2
+\end{align*}
+
+
+\textbf{\color{TealBlue}\emph{Cumulant Generating Function:} } 
+
+This is defined as:
+$$
+S_X(t) = \log (M_X(t)
+$$
+So 
+It's easily verified that:
+
+
+\begin{align*}
+\frac{d}{dt} S_X(t) \Big|_{t=0} = E[X] \;\;\; \text{ and} \;\;\; \frac{d^2}{dt^2} S_X(t) \Big|_{t=0} = Var(X) 
+\end{align*}
+
+%%%%%%%%%%%%%%% LogGamma %%%%%%%%%%%%%%%%%%%%%%
+\bigskip
+\textbf{\color{TealBlue}\emph{Distribution of Log of Gamma:} } 
+
+
+Let $Y = \log (X)$ where  $X\sim\mathrm{Gamma}(\alpha,\beta)$.  We want the distribution of $Y$. In the following notation, use the indicator functions to easily track the ranges of the variables during the transformation: 
+$$ f_X(x) = \frac{1}{\beta^{\alpha}\Gamma(\alpha)} \;\; x^{\alpha-1} e^{-x/\beta} \, 1_{(0,\infty)}(x) \, . $$
+
+Denoting the ivnverse of $Y = \log (X)$ by $h(Y)$, we have $ X=h(Y)=\mathrm{e}^Y$. Thererfore:
+$$
+ f_Y(y) = f_X(h(y)) |h'(y)| = \frac{1}{\beta^\alpha \Gamma(\alpha)} \;\; \mathrm{e}^{\left(\alpha y - e^y/\beta\right)}\,1_{(-\infty,\infty)}(y) \, ,
+$$
+
+
+%\begin{align} 
+%P(X \le c) & = \int_{0}^{c} \frac{1}{\theta^k} \frac{1}{\Gamma(k)} x^{\alpha k- 1} e^{-\frac{x}{\theta}} dx \\ P(Y \le \log c) & = \int_{\log(0)}^{\log(c)} \frac{1}{\theta^k} \frac{1}{\Gamma(k)} \exp(y)^{\alpha k- 1} e^{-\frac{\exp(y)}{\theta}} \exp(y) dy \\ 
+%\end{align}
+
+
+;alskdfjlskdfj;asdlfkj
+
+
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

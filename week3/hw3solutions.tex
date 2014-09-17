@@ -13,6 +13,10 @@
 \usepackage{enumerate}
 %\renewcommand*\familydefault{\sfdefault} %% Only if the base font of the document is to be sans serif
 
+%listings package for formatting code
+%\usepackage{listings}
+
+
 \newcommand{\N}{\mathbb{N}}
 \newcommand{\Z}{\mathbb{Z}}
 
@@ -119,7 +123,7 @@ Find two random variables $X$ and $Y$ , such that $Cov(X, Y ) = 0$ but $X$ and $
 \end{question}
 
  \textbf{\color{TealBlue}\emph{Answer:} } 
-Let $X$ just be Bernoulli:
+Let $X$ be Bernoulli:
   \[ 
 X = 
   \begin{cases} 
@@ -137,16 +141,16 @@ Y =
    \end{cases}
 \]
 
-Now since:
+Now since
 
 \begin{align*}
 E[XY] = & \  (-1) \cdot 0 \cdot P(X = - 1)  \ + \\
 &+1 \cdot 8003 \cdot P(X = 1, Y = 1) \ + \\
 & +1 \cdot (-8003) \cdot P(X = 1, Y = -1)  \\
-=& \ 0
+=& \ 0,
 \end{align*}
 
-And since $E[X]$ is also $0$, the
+and since $E[X]$ is also $0$, the
 the covariance $Cov(X, Y) = E[XY] - E[X] \cdot E[Y] = 0$, although the \texttt{r.v.}s are by definition dependent.
 
 \bigskip
@@ -166,17 +170,56 @@ In the Example of \texttt{GDP}. Assume that the data follows a gamma distributio
 
  \textbf{\color{TealBlue}\emph{Answer:} } 
 
+\begin{enumerate}[(a)]
 
+\item 
+We use the following paametrization of Gamma, where $\alpha$ is called the \emph{shape} parameter and $\beta$ is called  the \emph{scale} parameter:
+
+$$
+		f(x) = \frac{1}{\Gamma({\alpha})} \cdot \frac{1}{\beta} \cdot  \left( \frac{x}{\beta}\right)^{\alpha - 1} \mathrm{e}^{-\frac{x}{\beta}} \;\;\;\;\;\; \text{where} \;\;  x \ge 0 \;\; \alpha, \beta > 0
+$$
+
+Since $ \mathrm{E} \: X = \alpha\beta$ and $ \mathrm{E} \: X^2 = \alpha (\alpha + 1) \beta^2$,  we compute the first and second sample moments from the data (denoting them by $m_1$ and $m_2$, respectively) and set them equal to the distribution parameters as follows:
+
+$$
+\begin{cases} m_1   =   \hat{\alpha}\hat{\beta} \\ m_2 = \hat{\alpha} (\hat{\alpha} + 1) \hat{\beta}^2 =\hat{\alpha}^2 \hat{\beta}^2 + \hat{\alpha}\hat{\beta}^2
+\end{cases}
+\Rightarrow
+\begin{cases}  m_1 =\hat{\alpha}\hat{\beta} \\  m_2 -  m_1^2    =  \hat{\alpha}\hat{\beta}^2 
+\end{cases}
+\Rightarrow
+\begin{cases} \hat{\beta}  = \frac{m_2 -  m_1^2}{m_1} \\  \hat{\alpha}  = \frac{m_1^2}{m_2 - m_1^2}
+\end{cases}
+$$
+\item
+We will use the estimates derved in part (a) to plot both the density and the fitted curve. We will pass to \texttt{R} the value obtained for $\hat{\alpha}$ as \texttt{shape} parameter, and the value obtained for $\hat{\beta}$ as the \texttt{scale} parameter:
+
+
+\begin{verbatim}
+ 
+		m1 <- mean(gdp)
+		m2 <- mean(gdp^2)
+
+		beta.hat <- (m2 - m1^2) / m1
+		alpha.hat <- m1 / beta.hat
+
+		points(x, dgamma(x, shape=alpha.hat, scale=beta.hat), 'l', col='red')
+\end{verbatim}
+
+....TO INSERT FIGURE HERE ....
+
+
+\end{enumerate}
 
 \bigskip
 \bigskip
  %%%%%%%% Question 4 %%%%%%%%%
-\begin{question}{3.4}For any random variable $X$, let $MX(t) = E exp(Xt)$ and $SX(t) = log(MX(t))$. $MX(t)$ is called 
+\begin{question}{3.4}For any random variable $X$, let $M_X(t) = \mathrm{E} \: \mathrm{e}^{X(t)}$ and $S_X(t) = log(M_X(t))$. $M_X(t)$ is called 
 the moment generating function and $SX(t)$ is the cumulant generating function. It is known that (Can you prove it? Not required.)
 
 \begin{center}
 $$
-\frac{d}{dt} S_X(t) \Big|_{t=0} = E[X] \;\;\; \text{ and} \;\;\; \frac{d^2}{dt^2} S_X(t) \Big|_{t=0} = Var(X) 
+\frac{d}{dt} S_X(t) \Big|_{t=0} = \mathrm{E} \: X \;\;\; \text{ and} \;\;\; \frac{d^2}{dt^2} S_X(t) \Big|_{t=0} = Var(X) 
 $$
 \end{center}
 
@@ -185,7 +228,7 @@ Use this fact to answer the following questions.
 \begin{enumerate}[(a)]
 
    \item Assume that $X$ follows a Gamma distribution with parameter $\alpha$ and $\beta$. Calculate the cumulant generating function of $\log (X)$;
-   \item Calculate $E \log X$  and $Var(\log X)$. Write your final result by using the digamma function  $\psi (x) $
+   \item Calculate $ \mathrm{E} \: \log (X)$  and $Var(\log X)$. Write your final result by using the digamma function  $\psi (x) $
 and trigamma function  $\psi_1 (x) $, where  $\psi (x) = (\log \Gamma(x))^{'}$ and  $\psi_1 (x) = (\log \Gamma(x)))^{''}$.
    \item Match the first and second moment of $\log(X)$, and derive the \texttt{MOM} estimator of $\alpha$ and $\beta$. \\*
 (Hint: in \texttt{R}, you can use \texttt{digamma(x), trigamma(x),} and \\* \texttt{ limma::trigammaInverse(x).})
@@ -200,55 +243,76 @@ and trigamma function  $\psi_1 (x) $, where  $\psi (x) = (\log \Gamma(x))^{'}$ a
 
  \textbf{\color{TealBlue}\emph{Answer:} } 
 
-We first derive the distribution of $\log X$:
-
-
-\bigskip
-
-\textbf{\color{TealBlue}\emph{Distribution of Log of Gamma:} } 
-\bigskip
-
-Let $Y = \log (X)$ where  $X\sim\Gamma(\alpha,\beta)$.  We want the distribution of $Y$. 
-
-In the following notation, use the indicator functions to easily track the ranges of the variables during the transformation: 
-$$ f_X(x) = \frac{1}{\beta^{\alpha}\Gamma(\alpha)} \;\; x^{\alpha-1} e^{-x/\beta} \, 1_{(0,\infty)}(x) \, . $$
-
-We'll use the following well known theorem about computing the density of a transform, $g$, of some random variable $X$. Very loosely put, if $g(X) = Y$ and $g$ has an \emph{inverse}, call it $h(Y)$, then the \texttt{pdf} of $Y$ is:
+Let $Y = \log (X)$ where  $X\sim\Gamma(\alpha,\beta)$.  
+The distribution of $Y \sim $ \texttt{Log-of-Gamma}$(\alpha, \beta)$ is given by
 $$
-f_Y(y) = f_X(h(y)) |h'(y)|
+f_Y(y) = \frac{1}{\beta^\alpha \Gamma(\alpha)} \;\; \mathrm{e}^{\left(\alpha y - e^{y/\beta}\right)}\,1_{(-\infty,\infty)}(y)
 $$
 
-So here, denoting the inverse of $Y = \log (X)$ by $h(Y)$, we have $ X=h(Y)=\mathrm{e}^Y$ and $h'(y) = \mathrm{e}^{y}$. Therefore:
+
+Before answering part (a), we first find the moment generating function of \texttt{Log-of-Gamma}$(\alpha, \beta)$.
+
+\begin{center}
+\subsubsection*{\color{TealBlue}\emph{Moment Generating Function of Log Of Gamma}}
+\end{center}
+
+We now find the Moment Generating Function (\texttt{MGF}) of \texttt{Log-Of-Gamma}$(\alpha, \beta)$. By definition:
+$$
+M_Y(t) = \int_{-\infty}^{+\infty} \mathrm{e}^{ty} \frac{1}{\beta^\alpha \Gamma(\alpha)} \;\; \mathrm{e}^{\left(\alpha y - e^{y/\beta}\right)} dy
+$$
+To integrate this we use an old trick: we try to leave inside the integral sign the part of the function that integrates to 1 (this is often an easily recognizeable \texttt{pdf}); we then pull the constants that get in the way of making this integral equal to 1 out of the integral sign. Luckily, this can be done here:
 \begin{align*}
- f_Y(y) &= f_X(h(y)) |h'(y)| \\
- &= \frac{1}{\beta^\alpha \Gamma(\alpha)} \left(\mathrm{e}^{\alpha (y - 1)} - \mathrm{e}^{-\mathrm{e}^y/\beta}\right)\,|\mathrm{e}^{y}| \,\,\,1_{(-\infty,\infty)}(y) \\
-  &= \frac{1}{\beta^\alpha \Gamma(\alpha)} \left(\mathrm{e}^{\alpha y} - \mathrm{e}^{-\mathrm{e}^y/\beta}\right)\,\mathrm{e}^{-y}\mathrm{e}^{y} \,\,\,1_{(-\infty,\infty)}(y) \\
- &= \frac{1}{\beta^\alpha \Gamma(\alpha)} \;\; \mathrm{e}^{\left(\alpha y - e^y/\beta\right)}\,1_{(-\infty,\infty)}(y) \\
+M_Y(t) &= \frac{1}{\beta^\alpha \; \Gamma(\alpha)} \int_{-\infty}^{+\infty} \mathrm{e}^{ty} \;\; \mathrm{e}^{\left(\alpha y - e^{y/\beta}\right)} dy\\
+&= \frac{1}{\beta^\alpha \; \Gamma(\alpha)} \int_{-\infty}^{+\infty} \mathrm{e}^{\left(ty +\alpha y - e^{y/\beta}\right)} dy\\
+&= \frac{1}{\beta^\alpha \; \Gamma(\alpha)} \cdot \frac{\beta^{\alpha + t} \; \Gamma(\alpha + t)}{\beta^{\alpha + t} \; \Gamma(\alpha + t)} \cdot \int_{-\infty}^{+\infty} \mathrm{e}^{\left(y(\alpha + t) - e^{y/\beta}\right)} dy\\
+&= \frac{ \beta^{\alpha + t} \; \Gamma(\alpha + t) }{\beta^\alpha \; \Gamma(\alpha)}  \cdot \int_{-\infty}^{+\infty} \frac{1}{\beta^{t+\alpha} \; \Gamma(\alpha + t)} \mathrm{e}^{\left(y(\alpha + t) - e^{y/\beta}\right)} dy\\
+&= \frac{\beta^t \; \Gamma(\alpha + t)}{\Gamma(\alpha)} 
+\end{align*}
+\\
+\begin{enumerate}[(a)]
+
+\item By definition, the cumulant generating function is simply:
+$$
+S_Y(t) = log(M_Y(t)) = log \left(\frac{\beta^t \; \Gamma(\alpha + t)}{\Gamma(\alpha)} \right)
+$$
+\item 
+To find the expectation of \texttt{Log-Of-Gamma}, we differentiate $S_Y(t) = \log (M_Y(t))$ and evaluate the result at $t = 0$.
+
+\begin{align*}
+(S_Y(t))^{'} &= (\log (M_Y(t)))^{'} = \left(\log \left(\frac{\beta^t \; \Gamma(\alpha + t)}{\Gamma(\alpha)} \right)\right)^{'} \\
+&= \frac{1}{\frac{\beta^t \; \Gamma(\alpha + t)} {\Gamma(\alpha)}} \cdot \frac{1}{\Gamma(\alpha)} \cdot \left(  \beta^t \: \Gamma(\alpha + t)  \right)^{'}\\
+&= \frac{\Gamma(\alpha)}{\beta^t \; \Gamma(\alpha + t)}  \cdot \frac{1}{\Gamma(\alpha)} \cdot \left(  \beta^t \log(\beta) \; \Gamma(\alpha + t) + \beta^t \; \Gamma^{'} (\alpha +t) \right)\\
+&= \log(\beta) + \frac{\Gamma^{'} (\alpha +t) }{\Gamma(\alpha + t)}\\
 \end{align*}
 
-OK, so far so good. We found the \texttt{pdf} of \texttt{Log-Gamma}. 
 
-Now we find its moment generating function. By definition:
+The last term is the log-derivative of the Gamma function evaluated at $\alpha + t$. This log-derivative is called the \texttt{digamma} function and is denoted by $\psi(\cdot)$. Thus:
 $$
-M_Y(t) = \int_{-\infty}^{+\infty} \mathrm{e}^{ty} \frac{1}{\beta^\alpha \Gamma(\alpha)} \;\; \mathrm{e}^{\left(\alpha y - e^y/\beta\right)} dy
+(S_Y(t))^{'} =  \log(\beta) +\psi(\alpha +t)
 $$
-To integrate this we use the same trick of leaving inside the integral sign the part of the function that integrates to 1, getting constants appropriately out of the integral. Luckily, this can be done here:
+
+We \emph{conclude} that if $Y$ is \texttt{Log-Of-Gamma}$(\alpha, \beta)$ distributed, then its expectation is given by:
+$$
+ \boxed{\mathrm{E}\, Y =  \log(\beta) +\psi(\alpha)}
+$$
+To find the variance of $Y$, we we look at the second derivative, $(S_Y(t))^{''}$, and evaluate it at $t=0$.
 \begin{align*}
-M_Y(t) &= \frac{1}{\beta^\alpha \Gamma(\alpha)} \int_{-\infty}^{+\infty} \mathrm{e}^{ty} \;\; \mathrm{e}^{\left(\alpha y - e^y/\beta\right)} dy\\
-&= \frac{1}{\beta^\alpha \Gamma(\alpha)} \int_{-\infty}^{+\infty} \mathrm{e}^{\left(ty +\alpha y - e^y/\beta\right)} dy\\
-&= \frac{\Gamma(\alpha + t)}{\Gamma(\alpha) \beta^\alpha \Gamma(\alpha + t)} \int_{-\infty}^{+\infty} \mathrm{e}^{y \left(t +\alpha \right) - e^y/\beta} dy\\
-&= \frac{\Gamma(\alpha + t)}{\Gamma(\alpha)}  \int_{-\infty}^{+\infty} \frac{1} {\beta^\alpha \Gamma(\alpha + t)}\mathrm{e}^{y \left(t +\alpha \right) - e^y/\beta} dy\\
-&= \frac{\Gamma(\alpha + t)}{\Gamma(\alpha)} 
+(S_Y(t))^{''} &= (\log(\beta) +\psi(\alpha +t))^{'}\\
+&= \psi^{'}(\alpha +t)
 \end{align*}
 
-Where the last equality follows because the thing inside the integral is a \texttt{Log-Gamma pdf} and integrates to 1.
-
-Next, by definition, the \emph{cumulant generating function} is just the log of this:
+The derivative of \texttt{digamma} is the so-called \texttt{trigamma} function:
+%\begin{align*}
 $$
-\log M_Y(t) = \log \left(\frac{\Gamma(\alpha + t)}{\Gamma(\alpha)} \right)
+\boxed{Var(Y) = \psi^{'}(\alpha) = \psi_1(\alpha) =  \text{\texttt{trigamma($\alpha$)}}}
 $$
+%\end{align*}
 
+\item
 
+\item
+
+\end{enumerate}
 
  \end{document}
 %Note 1: The * tells LaTeX not to number the lines.  If you remove the *, be sure to remove it below, too.
