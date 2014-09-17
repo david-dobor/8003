@@ -308,9 +308,30 @@ $$
 $$
 %\end{align*}
 
-\item
+\item Now we use \texttt{limma::trigammaInverse()} to estimate $\alpha$. Since we estimate $Var(Y)$ by $m_2 - m_1^2$, our estimate of $\alpha$ is:
+$$
+\hat\alpha = \text{\texttt{limma::trigammaInverse}}(m_2 - m_1^2)
+$$
+And therefore our estimate for $\beta$ is 
 
-\item
+\begin{align*}
+\log(\hat\beta)= m_1 - \text{\texttt{digamma}}(\hat\alpha) \\
+\end{align*}
+or
+\begin{align*}
+\hat\beta = \mathrm{e}^{m_1 - \text{\texttt{digamma}}(\hat\alpha) }
+\end{align*}
+
+\item Applying the above results to our data, we get:
+
+\begin{verbatim}
+m1 <- mean(gdp)       # = 13478.52
+m2 <- mean(gdp^2)     # = 460173780
+
+new.alpha.hat <- limma::trigammaInverse(m2 - m1^2)   # = 5.992181e-05
+new.log.of.beta <- m1 - digamma(new.alpha.hat)       # = 30167.52
+new.beta.hat <- exp(m1 - digamma(new.alpha.hat))     # Inf
+\end{verbatim}
 
 \end{enumerate}
 
