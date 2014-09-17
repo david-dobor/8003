@@ -1,5 +1,5 @@
 
-######### Andrew's code 
+######### Andrew's code with minor midifications #########
 
 
 # #To install package limma:
@@ -13,7 +13,8 @@ gdp <- gdp.all[,62]
 gdp[ is.na(gdp) ] <- NULL
 
 #*******************************************************
-plot( density( gdp, from=0 ), col='green', xlab="gdp", ylab="density", main="HW#3", cex.lab=1.5, cex=2)
+jpeg('./gdpfit.jpg')
+plot( density( gdp, from=0 ), col='green', xlab="GDP", ylab="Density", main="GDP Data", cex.lab=1.5, cex=2)
 x=c(1:max(gdp))
 
 
@@ -27,9 +28,12 @@ beta.hat <- (m2 - m1^2) / m1
 alpha.hat <- m1 / beta.hat
 
 points( x, dgamma( x, shape=alpha.hat, scale=beta.hat ), 'l', col='red' )
-
+legend(50000, 3e-05, c("density", "fitted density"), lty=c(1, 1), col=c('green', 'red'), cex=2 )
+dev.off()
 
 #Problem 3.4
 
-# logalpha.hat <- limma::trigammaInverse(m2 - m1)
-# logbeta.hat <- exp(m1 - digamma(logalpha.hat)
+new.alpha.hat <- limma::trigammaInverse(m2 - m1^2)
+new.beta.hat <- exp(m1 - digamma(new.alpha.hat))
+new.log.of.beta <- m1 - digamma(new.alpha.hat)
+m1 - digamma(new.alpha.hat)
