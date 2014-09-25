@@ -1,9 +1,12 @@
 
 # part e) of problem 3 from hw4
 
-beta_0 = 15.0429
-beta_1 = -0.2322 
+# beta_0 = 15.0429
+# beta_1 = -0.2322 
 
+# 
+beta_0 = 9.0211846741774
+beta_1 = -0.154296115305373
 temp <- 31  # temperature during launch
 y = beta_0 + beta_1 * temp
 p = exp(y) / (1 + exp(y))
@@ -13,6 +16,8 @@ p
 ### part f), same problem
 
 ######## plotting the data 
+beta_0 = 9.0211846741774
+beta_1 = -0.154296115305373
 shuttle <- read.csv("http://astro.temple.edu/~zhaozhg/Stat8003/data/shuttle.txt")
 mean( shuttle$ndo /2 )
 

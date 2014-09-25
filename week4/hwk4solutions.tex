@@ -331,7 +331,7 @@ We could invert this Jacobian and use the following Newton-Raphson update rule t
 \bigskip
 Before implementing this in \texttt{R}, and since these expressions look complicated, we try to simplify life for ourselves by making the following observations.
 
-We can simplify these formulas, and their \texttt{R} implementation, if we note that
+We can simplify the \texttt{R} implementation by noting that
 the model given in this problem is equivalent to the following:
 $$
 \log\left(\frac{p_i}{1 - p_i}\right) = \beta_0 + \beta_1 t_i
@@ -368,8 +368,8 @@ We then apply Newton-Raphson to these guys.
 
 The estimates for the parameters are:
 \begin{align*}
-\beta_0 = 15.0429 \\
-\beta_1 = -0.2322 \\
+\beta_0 = 9.0211846741774\\
+\beta_1 = -0.154296115305373\\
 \end{align*}
 
 %then 
@@ -379,14 +379,14 @@ The estimates for the parameters are:
 \item On January 28, 1986, the outside temperature was 31 degrees. Based on your estimated $\beta_0$ and $\beta_1$, what is the probability of an o-ring failure?
 
 \begin{align*}
-y &= 15.0429 - 0.2322  * 31 = 7.8447 \\
+y &= 9.0211846741774-0.154296115305373  * 31 \\
 \end{align*}
 
 \begin{align*}
 p = \frac{\mathrm{e}^y}{ 1 + {\mathrm{e}^y}}\\
 \end{align*}
 \begin{align*}
-\boxed{p = 0.9996083}
+\boxed{p = 0.9857691}
 \end{align*}
 
 
