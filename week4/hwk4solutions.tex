@@ -51,7 +51,7 @@
 \maketitle
  
  %%%%%%%% Question 1 %%%%%%%%%
- \begin{question}{4.1} Suppose $X$ is a discrete random variables with $P(X = 1) = \theta$   and $ P(X = 2) = 1 − \theta$. Three independent observations of $X$ are made: $x_1 = 1,\; x_2 = 2,\;  x_3 = 2$.
+ \begin{question}{4.1} Suppose $X$ is a discrete random variables with $P(X = 1) = \theta$   and $ P(X = 2) = 1-\theta$. Three independent observations of $X$ are made: $x_1 = 1,\; x_2 = 2,\;  x_3 = 2$.
  \begin{enumerate}[(a)]
 \item Find the method of moments estimate of $\theta$;
 \item What is the likelihood function?
@@ -211,7 +211,7 @@ i.e.,
 \bigskip
  %%%%%%%% Question 3 %%%%%%%%%
 
-\begin{question}{4.2} 
+\begin{question}{4.3} 
  In the shuttle example, let $X_i$ denote the number of damaged o-rings and $t_i$
 the temperature, where $i = 1, 2, \dots, n$. Assume the model as
 $$
@@ -241,6 +241,8 @@ And thus the log likelihood is:
 l(\beta_0, \beta_1  ; \tilde x, \tilde t) &= \log \prod_{i=1}^n {2 \choose x_i} +  \sum_{i=1}^n x_i (\beta_0 + \beta_1 t_i) - 2 \sum_{i=1}^n \log (1 + exp(\beta_0 + \beta_1 t_i) ) \\
 &= Some \ Constant +  \beta_0 \sum_{i=1}^n x_i   + \beta_1 \sum_{i=1}^n x_i t_i - 2  \sum_{i=1}^n \log (1 + exp(\beta_0 + \beta_1 t_i) )
 \end{align*}
+
+
 \item  Set the equations for the maximum likelihood estimator of $\beta_0, \beta_1$
 Since
 \begin{align*}
@@ -256,7 +258,9 @@ We set these partial derivatives to 0 and solve them for $\beta_0$ and $\beta_1$
          \sum_{i=1}^n x_i t_i - 2 \sum_{i=1}^n \frac{ t_i exp(\beta_0 + \beta_1 t_i) } {1 + exp(\beta_0 + \beta_1 t_i) } = 0\\
     \end{cases}
 \end{align*}
-\item  Derive the steps for the Newton-Raphson algorithm
+
+\item  Derive the steps for the Newton-Raphson algorithm...
+
 In previous equations, we denote the first one by $f_1(\beta_0, \beta_1)$, the second with $f_2(\beta_0, \beta_1)$ and then apply Newton-Raphson to following two-variable problem:
 \begin{align*}
     \begin{cases} 
@@ -336,6 +340,93 @@ However, the Jacobian $J$ here is not invertible.
 \end{enumerate}
 
 
+%%%%%%%%%   ALTERNATIVE Part B, AND BEYOND %%%%%%%%%%%
+\bigskip
+\bigskip
+\bigskip
+\bigskip
+\bigskip
+\bigskip
+\bigskip
+\bigskip
+\bigskip
+\bigskip
+\bigskip
+\bigskip
+\bigskip
+\bigskip
+\bigskip
+\bigskip
+
+WHAT FOLLOWS BELOW IS AN ALTERNATIVE TO THE ABOVE PARTS b) - f)
+\bigskip
+\bigskip
+\bigskip
+\bigskip
+\bigskip
+\bigskip
+
+ \begin{enumerate}[(b)]
+\item Consider the following model (a bit of search reveals that this is nothing new, looks like it's called the logit model)
+
+Our model above is equivalent to the following:
+$$
+\log\left(\frac{p_i}{1 - p_i}\right) = \beta_0 + \beta_1 t_i
+$$
+We will denote $\log\left(\frac{p_i}{1 - p_i}\right) = y_i$ and try to fit the linear model
+$$
+y_i = \beta_0 + \beta_1 t_i
+$$
+We will then recover $p_i$ from the estimated $y_i$ for parts (e) and (f) of this problem.
+
+It is clear that we can just use \texttt{R}'s linear regression model to get the least squares estimates of $\beta_0$ and $\beta_1$. However, we will estimate these using Newton-Raphson instead.
+
+First,
+\begin{align*}
+L(\beta_0, \beta_1 ; \tilde t) &= \prod_{i=1}^n ( \beta_0 + \beta_1 t_i )\\
+\end{align*}
+and
+\begin{align*}
+l(\beta_0, \beta_1 ; \tilde t) &= \sum_{i=1}^n \log( \beta_0 + \beta_1 t_i )\\
+\end{align*}
+
+And now we set the partial derivatives with respect to $\beta_0$ and $\beta_1$ to zero:
+\begin{align*}
+    \begin{cases} 
+         \frac {\partial l} {\partial \beta_0} = \sum_{i=1}^n \frac{1} {\beta_0 + \beta_1 t_i} = 0\\
+         \frac {\partial l} {\partial \beta_1} = \sum_{i=1}^n \frac{t_i} {\beta_0 + \beta_1 t_i} = 0\\
+    \end{cases}
+\end{align*}
+
+
+\item Now we apply Newton-Raphson to these guys.
+
+Denote the first one by $f_1(\beta_0, \beta_1)$, the second with $f_2(\beta_0, \beta_1)$ and then apply Newton-Raphson to following two-variable problem:
+\begin{align*}
+    \begin{cases} 
+         f_1(\beta_0, \beta_1) = 0\\
+         f_2(\beta_0, \beta_1) =  0\\
+    \end{cases}
+\end{align*}
+
+The Jacobian matrix is:
+\begin{align*}
+J &=
+\left( {\begin{array}{*{20}c}
+\frac{\partial f_1(\beta_0, \beta_1) }{\partial \beta_0}&\frac{\partial f_1(\beta_0, \beta_1) }{\partial \beta_1}\\
+\frac{\partial f_2(\beta_0, \beta_1) }{\partial \beta_0}&\frac{\partial f_2(\beta_0, \beta_1) } {\partial \beta_1}\\
+ \end{array} } \right) \\
+&=
+\left( {\begin{array}{*{20}c}
+  - \sum_i \frac{1} {(\beta_0 + \beta_1 t_i)^2 } & -\sum_i \frac{t_i} {(\beta_0 + \beta_1 t_i)^2 }\\
+- \sum_i \frac{t_i} {(\beta_0 + \beta_1 t_i)^2 } & -\sum_i \frac{t_i^2} {(\beta_0 + \beta_1 t_i)^2 }\\
+ \end{array} } \right)  \\
+\end{align*}
+
+% - \sum_i \frac{1} {(\beta_0 + \beta_1)^2 & \sum_i - \frac{t_i} {(\beta_0 + \beta_1)^2 \\
+
+
+\end{enumerate}
 
 
 
