@@ -224,7 +224,6 @@ $$
  \begin{enumerate}[(a)]
 \item Derive the log-likelihood function;
 
-  \textbf{\color{TealBlue}\emph{Answer: } }
 Since
 \begin{align*}
 f(x_i \mid p_i) &= {2 \choose x_i} \left(\frac{ exp(\beta_0 + \beta_1 t_i) } { 1 +  exp(\beta_0 + \beta_1 t_i)} \right)^{x_i}     \left( \frac{1} { ( 1 +  exp(\beta_0 + \beta_1 t_i) } \right)^{2 - x_i} \\
@@ -300,13 +299,11 @@ t_i \frac{exp(\beta_0 + \beta_1 t_i) } { (1 + exp(\beta_0 + \beta_1 t_i))^2 } & 
 \end{align*}
 
 
+%%%%%%
+%%%%%%
+%%%%%%
 
-
-
-
-\item Use the Newton-Raphson algorithm to calculate the maximum likelihood estimator of $\beta_0$ and $\beta_1$
-
-Ideally, we would implement the above formulas in \texttt{R} and use the following Newton-Raphson update rule to find $\beta_0$ and $\beta_1$:
+We could invert this Jacobian and use the following Newton-Raphson update rule to find $\beta_0$ and $\beta_1$:
 \begin{align*}
 \left(
 \begin{array}{c} 
@@ -330,56 +327,22 @@ Ideally, we would implement the above formulas in \texttt{R} and use the followi
 \right)
 \end{align*} 
 
-However, the Jacobian $J$ here is not invertible. 
+\bigskip
+\bigskip
+Before implementing this in \texttt{R}, and since these expressions look complicated, we try to simplify life for ourselves by making the following observations.
 
-
-\item On January 28, 1986, the outside temperature was 31 degrees. Based on your estimated $\beta_0$ and $\beta_1$, what is the probability of an o-ring failure?
-
-\item Based on your estimator, plot the probability $p$ against the temperature by letting temperature go from 30 degrees to 90 degrees.
-
-\end{enumerate}
-
-
-%%%%%%%%%   ALTERNATIVE Part B, AND BEYOND %%%%%%%%%%%
-\bigskip
-\bigskip
-\bigskip
-\bigskip
-\bigskip
-\bigskip
-\bigskip
-\bigskip
-\bigskip
-\bigskip
-\bigskip
-\bigskip
-\bigskip
-\bigskip
-\bigskip
-\bigskip
-
-WHAT FOLLOWS BELOW IS AN ALTERNATIVE TO THE ABOVE PARTS b) - f)
-\bigskip
-\bigskip
-\bigskip
-\bigskip
-\bigskip
-\bigskip
-
- \begin{enumerate}[(b)]
-\item Consider the following model (a bit of search reveals that this is nothing new, looks like it's called the logit model)
-
-Our model above is equivalent to the following:
+We can simplify these formulas, and their \texttt{R} implementation, if we note that
+the model given in this problem is equivalent to the following:
 $$
 \log\left(\frac{p_i}{1 - p_i}\right) = \beta_0 + \beta_1 t_i
 $$
-We will denote $\log\left(\frac{p_i}{1 - p_i}\right) = y_i$ and try to fit the linear model
+We will denote $\log\left(\frac{p_i}{1 - p_i}\right) = y_i$ and write
 $$
 y_i = \beta_0 + \beta_1 t_i
 $$
-We will then recover $p_i$ from the estimated $y_i$ for parts (e) and (f) of this problem.
+Once we have estimates for  $\beta_0$ and $\beta_1$, we can then recover $p_i$ from $y_i$.
 
-It is clear that we can just use \texttt{R}'s linear regression model to get the least squares estimates of $\beta_0$ and $\beta_1$. However, we will estimate these using Newton-Raphson instead.
+(We note that we could use \texttt{R}'s linear regression model to get the least squares estimates of $\beta_0$ and $\beta_1$. However, we will estimate these using Newton-Raphson instead.)
 
 First,
 \begin{align*}
@@ -390,7 +353,7 @@ and
 l(\beta_0, \beta_1 ; \tilde t) &= \sum_{i=1}^n \log( \beta_0 + \beta_1 t_i )\\
 \end{align*}
 
-And now we set the partial derivatives with respect to $\beta_0$ and $\beta_1$ to zero:
+And we set the partial derivatives with respect to $\beta_0$ and $\beta_1$ to zero:
 \begin{align*}
     \begin{cases} 
          \frac {\partial l} {\partial \beta_0} = \sum_{i=1}^n \frac{1} {\beta_0 + \beta_1 t_i} = 0\\
@@ -399,49 +362,157 @@ And now we set the partial derivatives with respect to $\beta_0$ and $\beta_1$ t
 \end{align*}
 
 
-\item Now we apply Newton-Raphson to these guys.
+We then apply Newton-Raphson to these guys.
 
-Denote the first one by $f_1(\beta_0, \beta_1)$, the second with $f_2(\beta_0, \beta_1)$ and then apply Newton-Raphson to following two-variable problem:
+\item Use the Newton-Raphson algorithm to calculate the maximum likelihood estimator of $\beta_0$ and $\beta_1$
+
+The estimates for the parameters are:
 \begin{align*}
-    \begin{cases} 
-         f_1(\beta_0, \beta_1) = 0\\
-         f_2(\beta_0, \beta_1) =  0\\
-    \end{cases}
+\beta_0 = 15.0429 \\
+\beta_1 = -0.2322 \\
 \end{align*}
 
-The Jacobian matrix is:
+%then 
+
+
+
+\item On January 28, 1986, the outside temperature was 31 degrees. Based on your estimated $\beta_0$ and $\beta_1$, what is the probability of an o-ring failure?
+
 \begin{align*}
-J &=
-\left( {\begin{array}{*{20}c}
-\frac{\partial f_1(\beta_0, \beta_1) }{\partial \beta_0}&\frac{\partial f_1(\beta_0, \beta_1) }{\partial \beta_1}\\
-\frac{\partial f_2(\beta_0, \beta_1) }{\partial \beta_0}&\frac{\partial f_2(\beta_0, \beta_1) } {\partial \beta_1}\\
- \end{array} } \right) \\
-&=
-\left( {\begin{array}{*{20}c}
-  - \sum_i \frac{1} {(\beta_0 + \beta_1 t_i)^2 } & -\sum_i \frac{t_i} {(\beta_0 + \beta_1 t_i)^2 }\\
-- \sum_i \frac{t_i} {(\beta_0 + \beta_1 t_i)^2 } & -\sum_i \frac{t_i^2} {(\beta_0 + \beta_1 t_i)^2 }\\
- \end{array} } \right)  \\
+y &= 15.0429 - 0.2322  * 31 = 7.8447 \\
 \end{align*}
 
-% - \sum_i \frac{1} {(\beta_0 + \beta_1)^2 & \sum_i - \frac{t_i} {(\beta_0 + \beta_1)^2 \\
+\begin{align*}
+p = \frac{\mathrm{e}^y}{ 1 + {\mathrm{e}^y}}\\
+\end{align*}
+\begin{align*}
+\boxed{p = 0.9996083}
+\end{align*}
 
+
+\item Based on your estimator, plot the probability $p$ against the temperature by letting temperature go from 30 degrees to 90 degrees.
+
+The plot of the probability of failure for our estimates of $\beta$s looks like this:
+
+\begin{center}
+\includegraphics[width=10cm, height=10cm]{prob_vs_temp_plot_challenger}
+\end{center}
 
 \end{enumerate}
 
-
-
-
-
-
-
-
 \end{document}
-%Note 1: The * tells LaTeX not to number the lines.  If you remove the *, be sure to remove it below, too.
-%Note 2: Inside the  environment, you do not want to use $-signs.  The reason for this is that this is already a math environment. This is why we have to include \text{} around any text inside the align environment.
+%%%%%%%%   ALTERNATIVE Part B, AND BEYOND %%%%%%%%%%%
+%\bigskip
+%\bigskip
+%\bigskip
+\bigskip
+%\bigskip
+%\bigskip
+%\bigskip
+%\bigskip
+%\bigskip
+%\bigskip
+%\bigskip
+%\bigskip
+%\bigskip
+%\bigskip
+%\bigskip
+%\bigskip
+%
+%WHAT FOLLOWS BELOW IS AN ALTERNATIVE TO THE ABOVE PARTS b) - f)
+%\bigskip
+%\bigskip
+%\bigskip
+%\bigskip
+%\bigskip
+%\bigskip
+%
+% \begin{enumerate}[(b)]
+%\item We can simplify the formulas that follow, and their \texttt{R} implementation, if we note that
+%the model given in this problem is equivalent to the following:
+%$$
+%\log\left(\frac{p_i}{1 - p_i}\right) = \beta_0 + \beta_1 t_i
+%$$
+%We will denote $\log\left(\frac{p_i}{1 - p_i}\right) = y_i$ and write
+%$$
+%y_i = \beta_0 + \beta_1 t_i
+%$$
+%Once we have estimates for  $\beta_0$ and $\beta_1$, we can then recover $p_i$ from $y_i$.
+%
+%(We note that we could use \texttt{R}'s linear regression model to get the least squares estimates of $\beta_0$ and $\beta_1$. However, we will estimate these using Newton-Raphson instead.)
+%
+%First,
+%\begin{align*}
+%L(\beta_0, \beta_1 ; \tilde t) &= \prod_{i=1}^n ( \beta_0 + \beta_1 t_i )\\
+%\end{align*}
+%and
+%\begin{align*}
+%l(\beta_0, \beta_1 ; \tilde t) &= \sum_{i=1}^n \log( \beta_0 + \beta_1 t_i )\\
+%\end{align*}
+%
+%And we set the partial derivatives with respect to $\beta_0$ and $\beta_1$ to zero:
+%\begin{align*}
+%    \begin{cases} 
+%         \frac {\partial l} {\partial \beta_0} = \sum_{i=1}^n \frac{1} {\beta_0 + \beta_1 t_i} = 0\\
+%         \frac {\partial l} {\partial \beta_1} = \sum_{i=1}^n \frac{t_i} {\beta_0 + \beta_1 t_i} = 0\\
+%    \end{cases}
+%\end{align*}
+%
+%
+%\item Now we apply Newton-Raphson to these guys.
+%
+%Denote the first one by $f_1(\beta_0, \beta_1)$, the second with $f_2(\beta_0, \beta_1)$ and then apply Newton-Raphson to following two-variable problem:
+%\begin{align*}
+%    \begin{cases} 
+%         f_1(\beta_0, \beta_1) = 0\\
+%         f_2(\beta_0, \beta_1) =  0\\
+%    \end{cases}
+%\end{align*}
+%
+%The Jacobian matrix is:
+%\begin{align*}
+%J &=
+%\left( {\begin{array}{*{20}c}
+%\frac{\partial f_1(\beta_0, \beta_1) }{\partial \beta_0}&\frac{\partial f_1(\beta_0, \beta_1) }{\partial \beta_1}\\
+%\frac{\partial f_2(\beta_0, \beta_1) }{\partial \beta_0}&\frac{\partial f_2(\beta_0, \beta_1) } {\partial \beta_1}\\
+% \end{array} } \right) \\
+%&=
+%\left( {\begin{array}{*{20}c}
+%  - \sum_i \frac{1} {(\beta_0 + \beta_1 t_i)^2 } & -\sum_i \frac{t_i} {(\beta_0 + \beta_1 t_i)^2 }\\
+%- \sum_i \frac{t_i} {(\beta_0 + \beta_1 t_i)^2 } & -\sum_i \frac{t_i^2} {(\beta_0 + \beta_1 t_i)^2 }\\
+% \end{array} } \right)  \\
+%\end{align*}
+%
+%
+%\bigskip
+%
+%\item Let's suppose our estimates for the parameters are:
+%\begin{align*}
+%\beta_0 = 15.0429 \\
+%\beta_1 = -0.2322 \\
+%\end{align*}
+%then 
+%\begin{align*}
+%y &= 15.0429 - 0.2322  * 31 = 7.8447 \\
+%\end{align*}
+%
+%\begin{align*}
+%p = \frac{\mathrm{e}^y}{ 1 + {\mathrm{e}^y}}\\
+%\end{align*}
+%\begin{align*}
+%\boxed{p = 0.9996083}
+%\end{align*}
+%
+%\item The plot of the probability of failure for our estimates of $\beta$s looks like this:
+%
+%\begin{center}
+%\includegraphics[width=10cm, height=10cm]{prob_vs_temp_plot_challenger}
+%\end{center}
+%
+%\end{enumerate}
+%
 
-%\begin{proof}
-%Blah, blah, blah.  
-%\end{proof}
+
 
 %We then take the inverse of the result. For shorthand, denoting $J$ as:
 %\begin{align*}
@@ -465,6 +536,33 @@ J &=
 %\end{align*} 
 
 
-
+%%%%%%%%%%%%%% START STUFF ABOUT JACOBIAN NOT BEING ZERO %%%%%%%%%%%%%
+%
+%Now the determinant of this Jacobian is \emph{not} zero. Consider a small matrix with 2 obserbations, $t_1$ and $t_2$:
+%\begin{align*}
+%J &=
+%\left( {\begin{array}{*{20}c}
+%\frac{1 }{(\beta_0 + \beta1 t_1)^2} +\frac{1 }{(\beta_0 + \beta1 t_2)^2 }&\frac{t_1 }{(\beta_0 + \beta1 t_1)^2} +\frac{t_2}{(\beta_0 + \beta1 t_2)^2 }\\
+%\frac{t_1 }{(\beta_0 + \beta1 t_1)^2} +\frac{t_2}{(\beta_0 + \beta1 t_2)^2 } &\frac{t_1^2 }{(\beta_0 + \beta1 t_1)^2} +\frac{t_2^2}{(\beta_0 + \beta1 t_2)^2 }\\
+% \end{array} } \right) \\
+%\end{align*}
+%
+%\begin{align*}
+%det(J) &= \left( \frac{1 }{(\beta_0 + \beta_1 t_1)^2} +\frac{1 }{(\beta_0 + \beta_1 t_2)^2 } \right) 
+%            \left( \frac{t_1^2 }{(\beta_0 + \beta_1 t_1)^2} +\frac{t_2^2 }{(\beta_0 + \beta_1 t_2)^2 } \right) \\
+%       &- \left(\frac{t_1 }{(\beta_0 + \beta_1 t_1)^2} +\frac{t_2}{(\beta_0 + \beta_1 t_2)^2 }\right)
+%            \left(\frac{t_1 }{(\beta_0 + \beta_1 t_1)^2} +\frac{t_2}{(\beta_0 + \beta_1 t_2)^2 }\right)\\
+%        &= C_1^2 t_1^2 + C_1 C_2 t_2^2 + C_2 C_1 t_2^2  + C_2^2 t_2^2\\
+%        &- C_1^2 t_1^2 + C_1 C_2 t_1 t_2 + C_2 C_1 t_2 t_1  + C_2^2 t_2^2\\
+%        &\ne 0\\
+%\end{align*}
+%
+%where 
+%\begin{align*}
+%C_1 = \frac{1 }{(\beta_0 + \beta_1 t_1)^2} \; \; \text{and} \; \; C_2 =  \frac{1 }{(\beta_0 + \beta_1 t_2)^2}
+%\end{align*}
+%
+%
+%%%%%%%%%%%%%% END STUFF ABOUT JACOBIAN NOT BEING ZERO %%%%%%%%%%%%%
 
 
