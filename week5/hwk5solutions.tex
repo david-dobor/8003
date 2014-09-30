@@ -1,0 +1,122 @@
+ 
+\documentclass[12pt]{article}
+%author David Dobor
+\usepackage[margin=1in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb}
+ \usepackage{graphicx}
+ \usepackage{multirow}
+\usepackage[scaled]{helvet}
+\usepackage{hyperref}
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\usepackage[T1]{fontenc}
+\usepackage{palatino}
+\usepackage{enumerate}
+%\renewcommand*\familydefault{\sfdefault} %% Only if the base font of the document is to be sans serif
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+
+
+\newcommand{\blditA}{\textbf{\textit{A}}}
+\newcommand{\blditB}{\textbf{\textit{B}}}
+\newcommand{\blditC}{\textbf{\textit{C}}}
+\newcommand{\blditP}{\textbf{\textit{P}}}
+\newcommand{\blditQ}{\textbf{\textit{Q}}}
+\newcommand{\bldI}{\textbf{I}}
+\newcommand{\blditX}{\textbf{\textit{X}}}
+ 
+\newenvironment{theorem}[2][Theorem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{lemma}[2][Lemma]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{exercise}[2][Exercise]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{problem}[2][Problem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{question}[2][Question]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{answer}[2][Answer]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+
+\begin{document}
+ \renewcommand{\arraystretch}{1.3}
+
+ 
+\title{Stat 8003, Homework 5}%replace X with the appropriate number
+\author{Group G: \ \ \texttt{sample( c( "David" , "Andrew",  "Salam" ))}
+\\ %replace with your name
+} %if necessary, replace with your course title
+ 
+\maketitle
+ 
+ %%%%%%%% Question 1 %%%%%%%%%
+ \begin{question}{4.1}  
+ 
+ Consider a simulated dataset. Assume that the data $x_1, x_2, \cdots , x_n$ follows the following distribution:
+ $$
+ x_i \sim f(x_i) = \pi_0 f_0(x_i) + \pi_1 f_1(x_i)
+ $$
+ where $f_0(x_i) = 1(0 \leq x_i \leq 1)$ is the density function of the uniform and $f_1(x_i) = \beta (1 - x)^{\beta - 1} $ is the density function of $Beta(1, \beta)$. The group information can be treated as a
+missing value and is denoted as $z_i$. Let $y_i = (x_i, z_i)$ be the complete data.	
+ \begin{enumerate}[(a)]
+\item Derive the complete likelihood function;
+\item Using the EM algorithm to derive the estimator for $\pi_0$ and $\beta$;
+\item Apply your method to the data set, estimate $\pi_0$ and $\beta$ and the calculate $fdr_i = P(Z_i = 0 \mid x_i)$. (This score is called the local fdr score.)
+\item Classify $x_i$ to the first group if $fdr_i(x_i) > 0.5$. Compare your classification with the actual
+group information, what is the total number of falsely classified data?
+\end{enumerate}
+\end{question} 
+
+
+  \textbf{\color{TealBlue}\emph{Answer:} } 
+\bigskip
+\bigskip
+ %%%%%%%% Question 2 %%%%%%%%%
+ \begin{question}{4.2} (Continued from Problem 1.)  It is known that the local fdr score can be written as 
+$$
+fdr_i(x_i) = \frac{\pi_0 f_0(x_i)} {f(x_i)}
+$$
+where $f(x_i)$ is the marginal density of $x_i$. Assume that $\pi = 0.7$.
+ \begin{enumerate}[(a)]
+\item Estimate $f(x_i)$ by using the kernel density estimation with Gaussian kernel and Silverman's $h$;
+\item Estimate the local $fdr$ score;
+\item  Using the same rule as in 1(d), calculate the total number of falsely classified data;
+\item Choose the bandwidth using the maximum likelihood cross validation, repeat problem (a-c),
+what is the total number of falsely classified data?
+\item Which method works the best in terms of having the smallest classification error?
+\end{enumerate}
+\end{question} 
+
+
+  \textbf{\color{TealBlue}\emph{Answer:} } 
+ 
+ 
+ 
+ 
+ 
+ 
+ %%%%%%%% Question 3 %%%%%%%%%
+
+%\begin{question}{4.3} 
+% In the shuttle example, let $X_i$ denote the number of damaged o-rings and $t_i$
+%the temperature, where $i = 1, 2, \dots, n$. Assume the model as
+%$$
+%\begin{cases} 
+%       X_i \mid p_i \sim \text{Binom}(2, p_i) \\
+%       p_i = \mathrm{e}^{(\beta_0 + \beta_1 t_i)} /  ( 1 +  {\mathrm{e}^{(\beta_0 + \beta_1 t_i)})}
+%\end{cases}
+%$$
+%\end{question}
+% \begin{enumerate}[(a)]
+%\item Derive the log-likelihood function;
+%
+%Since
+%\begin{align*}
+%f(x_i \mid p_i) &= {2 \choose x_i} \left(\frac{ exp(\beta_0 + \beta_1 t_i) } { 1 +  exp(\beta_0 + \beta_1 t_i)} \right)^{x_i}     \left( \frac{1} { ( 1 +  exp(\beta_0 + \beta_1 t_i) } \right)^{2 - x_i} \\
+%&=  {2 \choose x_i}  \frac{ exp(\beta_0 + \beta_1 t_i)^{x_i} } { (1 +  exp(\beta_0 + \beta_1 t_i) )^2} \\
+%\end{align*}
+%
+
+\end{document}
+
+
