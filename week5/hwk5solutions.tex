@@ -24,6 +24,8 @@
 \newcommand{\blditQ}{\textbf{\textit{Q}}}
 \newcommand{\bldI}{\textbf{I}}
 \newcommand{\blditX}{\textbf{\textit{X}}}
+\newcommand{\blditY}{\textbf{\textit{Y}}}
+\newcommand{\blditZ}{\textbf{\textit{Z}}}
  
 \newenvironment{theorem}[2][Theorem]{\begin{trivlist}
 \item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
@@ -50,7 +52,7 @@
 \maketitle
  
  %%%%%%%% Question 1 %%%%%%%%%
- \begin{question}{4.1}  
+ \begin{question}{5.1}  
  
  Consider a simulated dataset. Assume that the data $x_1, x_2, \cdots , x_n$ follows the following distribution:
  $$
@@ -60,7 +62,7 @@
 missing value and is denoted as $z_i$. Let $y_i = (x_i, z_i)$ be the complete data.	
  \begin{enumerate}[(a)]
 \item Derive the complete likelihood function;
-\item Using the EM algorithm to derive the estimator for $\pi_0$ and $\beta$;
+\item Use the EM algorithm to derive the estimator for $\pi_0$ and $\beta$;
 \item Apply your method to the data set, estimate $\pi_0$ and $\beta$ and the calculate $fdr_i = P(Z_i = 0 \mid x_i)$. (This score is called the local fdr score.)
 \item Classify $x_i$ to the first group if $fdr_i(x_i) > 0.5$. Compare your classification with the actual
 group information, what is the total number of falsely classified data?
@@ -69,10 +71,128 @@ group information, what is the total number of falsely classified data?
 
 
   \textbf{\color{TealBlue}\emph{Answer:} } 
+    
+  
+\begin{enumerate}[(a)]  
+\item First, the \emph{incomplete} likelihood function is given to be:
+  $$
+  L(\theta \ ; \blditX) = \prod_{i=1}^n \left(   \pi_0 1 + \pi_1 \beta (1 - x_i)^{\beta - 1}   \right)
+  $$
+
+
+
+Then the \emph{complete} likelihood function is:
+$$\boxed{
+L(\theta \ ; \blditY) = \prod_{i=1}^n \left( 1 (Z_i = 0) \ \pi_0  + 1( Z_i = 1) \ \pi_1 \ \beta (1 - x_i)^{\beta - 1} \right) }
+$$ 
+  
+  An alternative way of writing this likelihood is:
+  \begin{align*}
+   f(x_i, z_i \mid \theta) = 
+  \begin{cases}
+  \pi_0 \; \; \; \; \; \; \; \; \; \; \; \; \; \; \; \; \; \; \; \; \; \; \; \; \; \text{if} \; Z_i = 0\\
+  \pi_1 \ \beta (1 - x_i)^{\beta - 1}\; \; \; \; \; \text{if}  \; Z_i = 1\\
+  \end{cases}
+  \end{align*}
+\item To get the estimates for $\pi_0$ and $\beta$, we first find the expected value of the \emph{log} of the \emph{complete likelihood} function with respect to $Z$ (the so called $Q$ function):
+
+\begin{align*}
+Q(\theta \mid \theta^t) &= \mathrm{E} \; \log (L(\theta \ ; \blditY) ) \\
+&= \mathrm{E} \; \log \left( \prod_{i=1}^n \left( 1 (Z_i = 0)\ \pi_0   + 1( Z_i = 1)\ \pi_1  \ \beta (1 - x_i)^{\beta - 1} \right) \right)\\
+&= \mathrm{E} \; \left[ \sum_{i=1}^n  \log \left( 1 (Z_i = 0)\ \pi_0   + 1( Z_i = 1)\ \pi_1 \ \beta (1 - x_i)^{\beta - 1} \right) \right] \\
+\end{align*}
+  
+  The last expression in the brackets is either $\log(\pi_0)$ or $ \log(\pi_1\ \beta (1 - x_i)^{\beta - 1})$, depending on the outcome of $Z$. So
+  
+\begin{align*}
+Q(\theta \mid \theta^t) &= \sum_{i=1}^n \left( \; \; \mathrm{E} \; 1 (Z_i = 0)\ \log(\pi_0) + \mathrm{E} \; 1 (Z_i = 1)\ \log(\pi_1\ \beta (1 - x_i)^{\beta - 1}) \; \; \right) \\
+&= \sum_{i=1}^n \left( \; \; P(Z_i = 0 \mid x_i, \theta)\ \log(\pi_0) +  P(Z_i = 1 \mid x_i, \theta)\ \log(\pi_1\ \beta (1 - x_i)^{\beta - 1}) \; \; \right) \\
+\end{align*}
+  
+  Where the last equality follows because the expectation of the indicator function of a \texttt{r.v.} is simply the probability of the corresponding event. \\
+  \\
+  These probabilities will be computed using Bayes rule and denoted by $T_{ij}^t$:
+\begin{align*}  
+T_{ij}^t &= P(Z_i = j \mid x_i, \theta) = \frac{P( x_i \mid Z_i = j) P(Z_i = j) } {\sum_{j=0}^1  P( x_i \mid Z_i = j) P(Z_i = j) }  \; \; \; \; \text{for} \; \; j = 0, 1 \\
+\end{align*} 
+Thus
+$$
+T_{i0}^t = \frac{\pi_0}{\pi_0 + \pi_1 \ \beta (1 - x_i)^{\beta - 1}} 
+$$
+\\
+$$
+T_{i1}^t = \frac{\pi_1 \ \beta (1 - x_i)^{\beta - 1}} { \pi_0 + \pi_1 \ \beta (1 - x_i)^{\beta - 1} }
+$$
+Rewriting the $Q$ function:
+\begin{align*}
+Q(\theta \mid \theta^t) &= \sum_{i=1}^n \left( \;  T_{i0}^t \log(\pi_0) + T_{i1}^t \log(\pi_1\ \beta (1 - x_i)^{\beta - 1}) \; \right) \\
+&= \sum_{i=1}^n \left(\;  T_{i0}^t \log(\pi_0) + T_{i1}^t \log(1 - \pi_0) \ + T_{i1}^t \log (\beta (1 - x_i)^{\beta - 1} \;  \right) \\
+\end{align*}
+
+Now we need to maximize this function with respect to $\pi_0$ and $\beta$......
+
+\begin{verbatim}
+.....
+.....
+.....
+.....
+
+
+invoke maximizer extrodinaire...
+
+should have started earlier...
+\end{verbatim}
+
+
+\end{enumerate}
+
+\vspace{1000 mm}
+
+
+
+
+
+
+
+
+
+\begin{verbatim}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{verbatim}
+
 \bigskip
 \bigskip
  %%%%%%%% Question 2 %%%%%%%%%
- \begin{question}{4.2} (Continued from Problem 1.)  It is known that the local fdr score can be written as 
+ \begin{question}{5.2} (Continued from Problem 1.)  It is known that the local fdr score can be written as 
 $$
 fdr_i(x_i) = \frac{\pi_0 f_0(x_i)} {f(x_i)}
 $$
@@ -92,31 +212,21 @@ what is the total number of falsely classified data?
  
  
  
- 
- 
- 
- %%%%%%%% Question 3 %%%%%%%%%
-
-%\begin{question}{4.3} 
-% In the shuttle example, let $X_i$ denote the number of damaged o-rings and $t_i$
-%the temperature, where $i = 1, 2, \dots, n$. Assume the model as
-%$$
-%\begin{cases} 
-%       X_i \mid p_i \sim \text{Binom}(2, p_i) \\
-%       p_i = \mathrm{e}^{(\beta_0 + \beta_1 t_i)} /  ( 1 +  {\mathrm{e}^{(\beta_0 + \beta_1 t_i)})}
-%\end{cases}
-%$$
-%\end{question}
-% \begin{enumerate}[(a)]
-%\item Derive the log-likelihood function;
-%
-%Since
-%\begin{align*}
-%f(x_i \mid p_i) &= {2 \choose x_i} \left(\frac{ exp(\beta_0 + \beta_1 t_i) } { 1 +  exp(\beta_0 + \beta_1 t_i)} \right)^{x_i}     \left( \frac{1} { ( 1 +  exp(\beta_0 + \beta_1 t_i) } \right)^{2 - x_i} \\
-%&=  {2 \choose x_i}  \frac{ exp(\beta_0 + \beta_1 t_i)^{x_i} } { (1 +  exp(\beta_0 + \beta_1 t_i) )^2} \\
-%\end{align*}
-%
 
 \end{document}
 
-
+%Rewriting the $Q$ function:
+%\begin{align*}
+%Q(\theta \mid \theta^t) &= \sum_{i=1}^n \left( \frac{\pi_0 \ \log(\pi_0) \ + \ \pi_1 \ \beta (1 - x_i)^{\beta - 1} \log(\pi_1\ \beta (1 - x_i)^{\beta - 1})} {\pi_0 + \pi_1 \ \beta (1 - x_i)^{\beta - 1}} \right) \\
+%&= \sum_{i=1}^n \left( \frac{\pi_0 \ \log(\pi_0) \ + \ \pi_1 \ \beta (1 - x_i)^{\beta - 1} \log(\pi_1\ \beta (1 - x_i)^{\beta - 1})} {\pi_0 + \pi_1 \ \beta (1 - x_i)^{\beta - 1}} \right) \\
+%\end{align*}
+%
+%We can express this in terms of $\pi_0$ and $\beta$ only:
+%\begin{align*}
+%Q(\theta \mid \theta^t) &= \sum_{i=1}^n \left( \frac{\pi_0 \ \log(\pi_0) \ + \ (1 - \pi_0) \ \beta (1 - x_i)^{\beta - 1} \log((1 - \pi_0)\ \beta (1 - x_i)^{\beta - 1})} {\pi_0 + (1 - \pi_0) \ \beta (1 - x_i)^{\beta - 1}} \right) \\
+%&= \sum_{i=1}^n \left( \frac{\pi_0 \ \log(\pi_0) \ + \ (1 - \pi_0) \ \beta (1 - x_i)^{\beta - 1} ( \log((1 - \pi_0)\ + \log (\beta (1 - x_i)^{\beta - 1}) )} {\pi_0 +  \ \beta (1 - x_i)^{\beta - 1} - \pi_0 \beta (1 - x_i)^{\beta - 1} }\right) \\
+%\end{align*}
+%\begin{align*}
+%\sum_{i=1}^n \left( \frac{\pi_0 \ \log(\pi_0) \ + \ (1 - \pi_0) \ \beta (1 - x_i)^{\beta - 1} \log((1 - \pi_0)\ + \ (1 - \pi_0) \ \beta (1 - x_i)^{\beta - 1} \log (\beta (1 - x_i)^{\beta - 1}) )} {\pi_0 +  \ \beta (1 - x_i)^{\beta - 1} - \pi_0 \beta (1 - x_i)^{\beta - 1} }\right) 
+%\end{align*}
+%
