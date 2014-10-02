@@ -1,6 +1,6 @@
  
 \documentclass[12pt]{article}
-%author David Dobor
+%authors Andrew Schneider, David Dobor
 \usepackage[margin=1in]{geometry} 
 \usepackage{amsmath,amsthm,amssymb}
  \usepackage{graphicx}
@@ -63,8 +63,8 @@ missing value and is denoted as $z_i$. Let $y_i = (x_i, z_i)$ be the complete da
  \begin{enumerate}[(a)]
 \item Derive the complete likelihood function;
 \item Use the EM algorithm to derive the estimator for $\pi_0$ and $\beta$;
-\item Apply your method to the data set, estimate $\pi_0$ and $\beta$ and the calculate $fdr_i = P(Z_i = 0 \mid x_i)$. (This score is called the local fdr score.)
-\item Classify $x_i$ to the first group if $fdr_i(x_i) > 0.5$. Compare your classification with the actual
+\item Apply your method to the data set, estimate $\pi_0$ and $\beta$ and the calculate $\text{\texttt{fdr}}_i = P(Z_i = 0 \mid x_i)$. (This score is called the local \texttt{fdr} score.)
+\item Classify $x_i$ to the first group if $\text{\texttt{fdr}}_i(x_i) > 0.5$. Compare your classification with the actual
 group information, what is the total number of falsely classified data?
 \end{enumerate}
 \end{question} 
@@ -94,7 +94,10 @@ $$
   \pi_1 \ \beta (1 - x_i)^{\beta - 1}\; \; \; \; \; \text{if}  \; Z_i = 1\\
   \end{cases}
   \end{align*}
-\item To get the estimates for $\pi_0$ and $\beta$, we first find the expected value of the \emph{log} of the \emph{complete likelihood} function with respect to $Z$ (the so called $Q$ function):
+
+
+%%%%% part b) the Q function and parameter estimates
+\item To get the estimates for $\pi_0$ and $\beta$, we first find the expected value of the \emph{log} of the \emph{complete likelihood} function with respect to $Z$ (the so called $Q$ function). As in the notation used in class, let $\theta^t$ stand for the parameter estimates obtained at iteration $t$ of the EM algorithm (so $\theta^t = (\pi_0^t, \beta^t)$).
 
 \begin{align*}
 Q(\theta \mid \theta^t) &= \mathrm{E} \; \log (L(\theta \ ; \blditY) ) \\
@@ -117,77 +120,88 @@ T_{ij}^t &= P(Z_i = j \mid x_i, \theta) = \frac{P( x_i \mid Z_i = j) P(Z_i = j) 
 \end{align*} 
 Thus
 $$
-T_{i0}^t = \frac{\pi_0}{\pi_0 + \pi_1 \ \beta (1 - x_i)^{\beta - 1}} 
+T_{i0}^t = \frac{\pi_0^t}{\pi_0^t + \pi_1^t \ \beta^t (1 - x_i)^{\beta^t - 1}} 
 $$
 \\
 $$
-T_{i1}^t = \frac{\pi_1 \ \beta (1 - x_i)^{\beta - 1}} { \pi_0 + \pi_1 \ \beta (1 - x_i)^{\beta - 1} }
+T_{i1}^t = \frac{\pi_1^t \ \beta^t (1 - x_i)^{\beta^t - 1}} { \pi_0^t + \pi_1^t \ \beta (1 - x_i)^{\beta^t - 1} }
 $$
+(where the superscript $^t$ marks the values of the parameters obtained at the the $t$-th iteration.)
+
 Rewriting the $Q$ function:
 \begin{align*}
 Q(\theta \mid \theta^t) &= \sum_{i=1}^n \left( \;  T_{i0}^t \log(\pi_0) + T_{i1}^t \log(\pi_1\ \beta (1 - x_i)^{\beta - 1}) \; \right) \\
 &= \sum_{i=1}^n \left(\;  T_{i0}^t \log(\pi_0) + T_{i1}^t \log(1 - \pi_0) \ + T_{i1}^t \log (\beta (1 - x_i)^{\beta - 1} \;  \right) \\
 \end{align*}
 
-Now we need to maximize this function with respect to $\pi_0$ and $\beta$......
+We maximize it with respect to $\pi_0$ and $\beta$. Setting $Q$'s partial derivatives to zero,
+\begin{align*}
+\frac{d}{d\pi_0} Q(\theta \mid \theta^t) &= \sum_{i=1}^n \left( \; \; 
+ T_{i0}^t \frac{1}{\pi_0} - T_{i1}^t  \frac{1}{1 - \pi_0} \; \; \right) = 0\\
+%\end{align*}
+%\begin{align*}
+\frac{d}{d\beta} Q(\theta \mid \theta^t) &= \sum_{i=1}^n \left( \; \; 
+T_{i1}^t  \frac{1}{\beta} + T_{i1}^t \log(1 - x_i)\; \; \right) = 0\\
+\end{align*}
+We obtain
+$$\boxed{
+\pi_0^{t+1} = \frac{\sum_{i=1}^n T_{i0}^t } {\sum_{i=1}^n \left( T_{i0}^t + T_{i1}^t \right)} = \frac{\sum_{i=1}^n T_{i0}^t } {n} }
+$$
+$$\boxed{
+\beta^{t+1} = \frac{-\sum_{i=1}^n T_{i1}^t  } {\sum_{i=1}^n T_{i1}^t \log(1 - x_i) } }
+$$
+\\
 
+%%%%% part c)  use the data set to obtain concrete estimates for parameters
+\item
+The EM algorithm converges to the following values of $\theta$ (code attached separately):
+$$\boxed{
+\pi_0 = 0.696794 \; \; \; \text{and} \; \; \; \beta = 11.093249 }
+$$
+We use these parameters to obtain the \texttt{fdr} score for the $i^{\text{th}}$ observation as follows:
+$$
+\text{\texttt{fdr}}_i  = P(Z_i = 0 \mid x_i) =  T_{i0} = \frac{\pi_0}{\pi_0 + \pi_1 \ \beta (1 - x_i)^{\beta - 1}}
+$$
+
+The following code snippet was used to obtain the \texttt{fdr} scores:
 \begin{verbatim}
-.....
-.....
-.....
-.....
+# X.value # this is the given data
+# beta # = 11.093249 , obtained by running EM algorithm
+# pi0 # 0.696794 , obtained by running EM algorithm
+
+fdr_score <- pi0 / (pi0 + pi1*beta*(1 - X.value)^(beta - 1))  
 
 
-invoke maximizer extrodinaire...
-
-should have started earlier...
 \end{verbatim}
 
+%%%%% part d)  classify data according to fdr score
+\item
+We can now classify data using the criterion that a data point belongs to the first group if its \texttt{fdr} score exceeds $0.5$ and that it belongs to the second group otherwise. We can then compare our classification result with the actual group information:
+
+\begin{verbatim}
+##Find the local fdr and compare it with the data
+
+greater_than_half = function(x){
+    if( x > 0.5)
+        0
+    else
+        1
+}
+
+fdr_score <- pi0 / (pi0 + pi1*beta*(1 - X.value)^(beta - 1))
+Z.guess <- sapply(fdr_score,greater_than_half)
+
+falsely_classed <- sum(abs(Z.guess - X.group))   # =321
+\end{verbatim}
+
+Thus only 321 out of 2000 got falsely classified (about 16\%). 
 
 \end{enumerate}
 
 \vspace{1000 mm}
 
-
-
-
-
-
-
-
-
-\begin{verbatim}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-\end{verbatim}
+%\begin{verbatim}
+%\end{verbatim}
 
 \bigskip
 \bigskip
@@ -199,7 +213,7 @@ $$
 where $f(x_i)$ is the marginal density of $x_i$. Assume that $\pi = 0.7$.
  \begin{enumerate}[(a)]
 \item Estimate $f(x_i)$ by using the kernel density estimation with Gaussian kernel and Silverman's $h$;
-\item Estimate the local $fdr$ score;
+\item Estimate the local \texttt{fdr} score;
 \item  Using the same rule as in 1(d), calculate the total number of falsely classified data;
 \item Choose the bandwidth using the maximum likelihood cross validation, repeat problem (a-c),
 what is the total number of falsely classified data?
@@ -210,8 +224,63 @@ what is the total number of falsely classified data?
 
   \textbf{\color{TealBlue}\emph{Answer:} } 
  
- 
- 
+\begin{enumerate}[(a)]
+\item Using the Gaussian kernel, and Silverman's $h$, our density estimate looks like this:
+
+\begin{center}
+\includegraphics[width=10cm, height=10cm]{plot_prob2_a}
+\end{center} 
+(The code that generates this figure is submitted separately.)
+
+\item From part (a) we are able to estimate density at each observation $x_i$. We use the following formula to compute the \texttt{fdr} score:
+\\
+$$
+\text{\texttt{fdr}}_i = \frac{0.7} {\text{value of the estimated density } f(x_i)}
+$$
+\\
+The following code snippet does this computation in \texttt{R}:
+\begin{verbatim}
+pi0 <- 0.7
+n <- length( X.value )
+h <- 1.06 * sqrt( var(X.value) ) / (n^(1/5))
+
+k_estimate = function(x){
+    1/(h) * mean( dnorm( (x - X.value)/h, 0, h))
+}
+
+X.kdestimate <- pi0 / sapply(X.value,k_estimate)
+\end{verbatim}
+
+\item The total number of falsely classified observations using the score turns out to be 318:
+\begin{verbatim}
+X.kdestimate <- pi0 / sapply(X.value,k_estimate)
+Z.guess.kde <- sapply(X.kdestimate,greater_than_half)
+
+falsely_classed2 <- sum(abs(Z.guess.kde - X.group)) #answer: 318
+\end{verbatim}
+
+\item We now choose a different bandwidth $h$ using the \texttt{kedd} library. Here $h$ turns out to be higher than Silverman's $h$: $\text{\texttt{h.cv}} = 0.1058126$.
+\begin{verbatim}
+library(kedd)
+h <- h.mlcv(X.value)$h    # output: h.cv = 0.1058126
+\end{verbatim}
+
+Repeating steps (a) - (c) with this new $h$ gives:
+\begin{verbatim}
+
+X.kdestimate.cv <- pi0 / sapply(X.value,k_estimate)
+Z.guess.kde.cv <- sapply(X.kdestimate.cv,greater_than_half)
+
+falsely_classed3 <- sum(abs(Z.guess.kde.cv - X.group)) # answer: 325
+\end{verbatim}
+
+With the new bandwidth, we get a slightly higher number of falsely classified data. 
+
+The number of falsely classified here is 325.
+
+
+\item Which method works best? We expected cross-validation to work better, but it actually gave worse results: 325 falsely classified as opposed to 318 falsely classified with Silverman's h. The difference isn't great, but among the three estimates used here, Silverman's h gave us the lowest number of falsely classified.
+ \end{enumerate}
 
 \end{document}
 
