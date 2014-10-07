@@ -13,7 +13,7 @@ theta.new <- theta.old
 delta <- 0.0001
 Delta <- 1
 itr <- 1
-
+ 
 while(Delta > delta )
   {
     theta.old <- theta.new

@@ -1,0 +1,49 @@
+Empirical Distribution Function
+========================================================
+
+We already saw kernel density estimation. 
+
+We now look at empirical CDF
+$$
+F(X) = P(X \le x) = \frac{\text{# of data points of } X_i \le x}{n} 
+= \frac{1}{n}\sum 1(X_i \le x)
+$$ 
+
+We can show that this esitmator is unbiased. Introduce a new notation. For each
+$X_i$ let $Y_i = 1(X_i \le x)$. Then $Y_i$ is Bernoulli with parameter $p = F(X)$
+and thus $\sum Y_i$ is binomially distributed. Then
+$$
+F_n(X) = \frac{1} {n}\sum Y_i = \frac{\text{Binom}(n, F(x))}{n} = \frac{n F(X)}{n} = F(X)
+$$
+Therefore this esitmator is unbiased.
+
+### Exaple with 'Faithful' data
+```{r fig.width=9, fig.height=9}
+X <- faithful$waiting
+#these esitmate comes from running the EM algorithm on faithful data
+pi0 <- 0.3608856 
+pi1 <- 0.6391144
+mu0 <- 54.61484; sigma0 <- 5.871206;
+mu1 <- 80.09106; sigma1 <- 5.867744;
+xaxis <- seq( min(X), max(X), 0.01)
+emp.cdf <- xaxis
+EM.cdf <- xaxis
+
+for(i in 1:length( xaxis ) )
+  {
+    emp.cdf[i] <- mean( X <= xaxis[i] )
+    EM.cdf[i] <- pi0 * pnorm( xaxis[i], mu0, sigma0 ) + pi1 * pnorm( xaxis[i], mu1, sigma1 )
+  }
+
+par( mfrow=c(2,1) )
+
+## Recall the EM estiamtes
+## postscript("figure/emp_cdf.eps", horizontal=FALSE)
+plot( xaxis, emp.cdf, main="Simulated data", xlab="X", ylab="cdf", cex.main=2, cex.lab=1.5,'l', lwd=3, col='red' )
+points( xaxis, EM.cdf, 'l', col='green', lwd=3  )
+legend(50, 0.8, c("Empirical cdf", "cdf based on EM"), lty=c(1, 1), col=c('red', 'green'), lwd=c(3,3), cex=2 )
+```
+
+<!-- regular html comment 
+
+--> 
