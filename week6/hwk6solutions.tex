@@ -65,9 +65,26 @@ are observed.
 
 
   \textbf{\color{TealBlue}\emph{Answer:} } 
-   
-...This part is done... Write this up later... Shouldn't take long... 
+ \begin{enumerate}[(a)]  
+\item Let $X$ be the number of heads showing up in 10 tosses of the coin, i.e. $X \sim Binomial(10, p)$ where $p$ is the probability of landing heads. The hypotheses are
+$$ 
+H_0: \ p = \frac{1}{2}, \; \; \; \; vs  \; \; \; \; H_a: \ p  \neq \frac{1}{2}.
+$$
+By definition,
+\begin{align*}
+\alpha &= P (X = 0 \mid H_0) + P (X = 10 \mid H_0) \\
+&= {10 \choose 0} \left(\frac{1}{2}\right)^0 \left(\frac{1}{2}\right)^{10} +  {10 \choose 10} \left(\frac{1}{2}\right)^{10} \left(\frac{1}{2}\right)^{0}\\
+&= \frac{2}{2^{10}}  = \frac{1}{512}\\
+&= 0.002
+\end{align*}
 
+\item If $p = 0.1$, then the probability of rejecting the null hypothesis is
+\begin{align*}
+1 - \beta &= {10 \choose 0} (0.1)^0 (0.9)^{10} +  {10 \choose 10} (0.1)^{10} (0.9)^{0}\\
+&= 0.3486784
+\end{align*}
+Thus the significance level of this test is 0.002 and its power is 0.3487.
+\end{enumerate}
 \bigskip
 \bigskip
  %%%%%%%% Question 2 %%%%%%%%%
@@ -133,7 +150,7 @@ $$
 
 %%answer to 2 (b)
 \item
-Some people like to claim that a picture is worth a few words\footnote{One author of this homework has heard of pictures being worth thousands of words, but he's skeptical of this claim.}. Let's see what the rejection region from part (a) might look like:
+Some people like to claim that a picture is worth a few words\footnote{One author of this homework has heard of pictures being worth thousands of words, but he's skeptical of this claim.}. Here's what the rejection region from part (a) might look like:
 
 \begin{center}
 \includegraphics[width=10cm, height=10cm]{rejection_region_plot}
@@ -142,8 +159,34 @@ Some people like to claim that a picture is worth a few words\footnote{One autho
 The dashed horizontal line in this picture corresponds to the constant $c$ from part (a). The test statistic has to be below this constant, that is $\bar X$ has to fall outside the shaded region, for us to reject $H_0$. This picture shows that $x_0$ and $x_1$ are determined by the constant $c$: at these points our test statistic $\bar X \mathrm{e}^{-\bar X}$ intersects the horizontal line at level $c$.
 \bigskip
 %%answer to 2 (c)
-\item //TODO: Figure this out later ...
+\item
+To simplify the notation, let $Y = \sum_i^{10} X_i$. We know that under the null hypothesis $Y$ follows the $Gamma(10, 1)$ distribution. We rewrite the expression we got in part (a) as follows:
+\begin{align*}
+\bar X \mathrm{e}^{-\bar X} \leq c \; \; \; &\Rightarrow \; \; \; \frac{Y}{10} (\mathrm{e}^{-Y})^{\frac{1}{10}} \leq c\\
+\\
+&\Rightarrow \; \; \; Y^{10} \mathrm{e}^{-Y} \leq (10 c)^{10} \\
+\end{align*}
+
+Thus we are looking for a constant $c$ such that 
+$$
+P \left( Y^{10} \mathrm{e}^{-Y} \leq (10 c)^{10} \right)  = \alpha = 0.05.
+$$
+Or, taking the logarithms of both sides of the inequality,
+$$
+P \left(  10 \log Y - Y \leq \log \left( (10 c)^{10} \right) \right) = 0.05.
+$$
+Again, for simplicity of notation, denote $\log( (10 c)^{10}) $ by $k$. Thus, for $Y \sim Gamma(10,1)$, we are looking for such constant $k$ that satisfies the following inequality:
+$$
+\boxed{P \left( \  10 \log Y - Y \leq k \  \right) = 0.05}
+$$
+
+We can plot $ 10 \log Y - Y $ and find the constant $k$ that makes the area under the curve, and below this constant, equal to $\alpha = 0.05$. (We can then easily recover $c$ from $k$, if need be).
+
+\begin{center}
+\includegraphics[width=10cm, height=10cm]{alpha_cut_off}
+\end{center} 
 \end{enumerate}
+
 
 \bigskip
 \bigskip
