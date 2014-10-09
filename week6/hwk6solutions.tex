@@ -42,7 +42,7 @@
 
 \begin{document}
  \renewcommand{\arraystretch}{1.3}
-
+ \renewcommand{\thefootnote}{\fnsymbol{footnote}}	
  
 \title{Stat 8003, Homework 6}%replace X with the appropriate number
 \author{Group G: \ \ \texttt{sample( c( "David" , "Andrew",  "Salam" ))}
@@ -112,7 +112,7 @@ used to choose $c$?
 \begin{enumerate}[(a)]
 
 %%answer to 2 (a)
-\item Since the \texttt{MLE} of the parameter $\theta$ for the exponential distribuiton is given by:
+\item Since the \texttt{MLE} of the parameter $\theta$ for the exponential distribution is given by:
 $$
 \hat \theta = 1 / \bar X,
 $$
@@ -156,7 +156,7 @@ Some people like to claim that a picture is worth a few words\footnote{One autho
 \includegraphics[width=10cm, height=10cm]{rejection_region_plot}
 \end{center} 
 
-The dashed horizontal line in this picture corresponds to the constant $c$ from part (a). The test statistic has to be below this constant, that is $\bar X$ has to fall outside the shaded region, for us to reject $H_0$. This picture shows that $x_0$ and $x_1$ are determined by the constant $c$: at these points our test statistic $\bar X \mathrm{e}^{-\bar X}$ intersects the horizontal line at level $c$.
+The dashed horizontal line in this picture corresponds to the constant $c$ from part (a). The test statistic has to be below this constant, that is $\bar X$ has to fall outside the shaded region, for us to reject $H_0$. This picture shows that $x_0$ and $x_1$ are determined by the constant $c$: at these points our test statistic $\bar X \mathrm{e}^{-\bar X}$ intersects the horizontal line at level $c$. (\ $\bar X \mathrm{e}^{-\bar X}$ attains the maximum value of $1/\mathrm{e}$ when $\bar X = 1$ . For $c \geq 1/\mathrm{e}$ we would reject $H_0$ because then the rejection region would cover the entire $\bar X$ space.\ ) 
 \bigskip
 %%answer to 2 (c)
 \item
@@ -169,22 +169,35 @@ To simplify the notation, let $Y = \sum_i^{10} X_i$. We know that under the null
 
 Thus we are looking for a constant $c$ such that 
 $$
-P \left( Y^{10} \mathrm{e}^{-Y} \leq (10 c)^{10} \right)  = \alpha = 0.05.
+P \left( \ Y^{10} \mathrm{e}^{-Y} \leq (10 c)^{10} \ \right)  = \alpha = 0.05.
 $$
 Or, taking the logarithms of both sides of the inequality,
 $$
-P \left(  10 \log Y - Y \leq \log \left( (10 c)^{10} \right) \right) = 0.05.
+P \left( \ 10 \log Y - Y \leq \log\  (10 c)^{10}  \ \right) = 0.05.
 $$
-Again, for simplicity of notation, denote $\log( (10 c)^{10}) $ by $k$. Thus, for $Y \sim Gamma(10,1)$, we are looking for such constant $k$ that satisfies the following inequality:
+Again, for simplicity of notation, denote $\log\ (10 c)^{10} \ $ by $k$. Thus, for $Y \sim Gamma(10,1)$, we are looking for such constant $k$ that satisfies the following inequality:
 $$
 \boxed{P \left( \  10 \log Y - Y \leq k \  \right) = 0.05}
 $$
 
-We can plot $ 10 \log Y - Y $ and find the constant $k$ that makes the area under the curve, and below this constant, equal to $\alpha = 0.05$. (We can then easily recover $c$ from $k$, if need be).
+One approach to computing $k$ would be to first compute the \texttt{cdf} of the random variable $ 10 \log Y - Y $, and then read the value of $k$ at which this \texttt{cdf} equals 0.05.
 
-\begin{center}
-\includegraphics[width=10cm, height=10cm]{alpha_cut_off}
-\end{center} 
+Using this method (code attached) we obtain 
+$$
+k=11.08295\footnote{From this $k$ we may recover $c$, if need be:
+\begin{align*}
+k &= \log (10 c)^{10} = 11.08295\\
+\; \; \; &\Rightarrow\\
+c &= \frac{1}{10} \mathrm{e}^{11.08295/10}\\
+\end{align*}
+
+$$
+\boxed{c = 0.3029189}
+$$}. 
+$$
+%\begin{center}
+%\includegraphics[width=10cm, height=10cm]{alpha_cut_off}
+%\end{center} 
 \end{enumerate}
 
 
@@ -206,6 +219,36 @@ We can plot $ 10 \log Y - Y $ and find the constant $k$ that makes the area unde
 
   \textbf{\color{TealBlue}\emph{Answer:} } 
  
+\begin{enumerate}[(a)]
 
+
+\item We now use the test statistic from Problem 2 ($ \ T = 10 \log \sum_i x_i - \sum_i x_i \ $ where $x_i$ are the observed data) to compute the $p$-value. (\texttt{R} code that computes these is attached). We get:
+\begin{align*}
+\text{\texttt{T}} &= \text{\texttt{11.74459}} \\
+\text{\texttt{p.value}} &= \text{\texttt{0.113}}
+\end{align*}
+This $p$-value is too high. We decide that we can not reject $H_0$:
+$$
+\boxed{\text{Accept} \ \ \ H_0}
+$$ 
+\item 
+We have $n = 10$ and $ \bar X = 1.595$ from the data. Using the result that $ 2 \log \Lambda | H_0 \sim \chi^2_1 $, we obtain the test statistic
+\begin{align*}
+2 \log \Lambda &= 2 \log \left( \bar X^{-n} \mathrm{e}^{ -n } \mathrm{e}^{n \bar X} \right)\\
+&= - 2 n \log \bar X - 2 n  + 2 n \bar X \\ 
+&= 2.562525
+\end{align*}
+The chances of obtaining a value that is at least as extreme as $2.562525$ can be calculated in \texttt{R} by 
+\begin{verbatim}
+1 - pchisq(2.562525, df=1)  #ans: 0.1094237
+\end{verbatim} 
+This $p$-value is again too high. Unable to reject $H_0$, we  again
+$$
+\boxed{\text{Accept} \ \ \ H_0}
+$$ 
+
+
+
+\end{enumerate}
 \end{document}
 
