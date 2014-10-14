@@ -1,0 +1,250 @@
+ 
+\documentclass[12pt]{article}
+%authors Andrew Schneider, David Dobor
+\usepackage[margin=1in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb}
+ \usepackage{graphicx}
+ \usepackage{multirow}
+\usepackage[scaled]{helvet}
+\usepackage{hyperref}
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\usepackage[T1]{fontenc}
+\usepackage{palatino}
+\usepackage{enumerate}
+%\renewcommand*\familydefault{\sfdefault} %% Only if the base font of the document is to be sans serif
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+
+
+\newcommand{\blditA}{\textbf{\textit{A}}}
+\newcommand{\blditB}{\textbf{\textit{B}}}
+\newcommand{\blditC}{\textbf{\textit{C}}}
+\newcommand{\blditP}{\textbf{\textit{P}}}
+\newcommand{\blditQ}{\textbf{\textit{Q}}}
+\newcommand{\bldI}{\textbf{I}}
+\newcommand{\blditX}{\textbf{\textit{X}}}
+\newcommand{\blditY}{\textbf{\textit{Y}}}
+\newcommand{\blditZ}{\textbf{\textit{Z}}}
+ 
+\newenvironment{theorem}[2][Theorem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{lemma}[2][Lemma]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{exercise}[2][Exercise]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{problem}[2][Problem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{question}[2][Question]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{answer}[2][Answer]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+
+\begin{document}
+ \renewcommand{\arraystretch}{1.3}
+ \renewcommand{\thefootnote}{\fnsymbol{footnote}}	
+ 
+\title{Notes and Examples on Hypothesis Testing}%replace X with the appropriate number
+
+ 
+\maketitle
+
+
+   \textbf{\color{TealBlue}\emph{Answer:} }
+
+From previous discussion... built test statistics, computed the values of these test statistics for given the data, and computed $p$-values - the probability of obtaining a value of that statistic, or something even worse,
+under the null hypothesis.
+
+Now we consider testing for the proportion (or population mean). We start from the
+simple and move to the more complicated. Start with testing for one population mean. 
+
+ Testing for the Population Mean    
+* Two sided test:  
+ 
+$$
+H_0: \mu = \mu_0
+$$  
+\begin{center} vs \end{center}  
+$$
+H_a: \mu \neq \mu_0
+$$   
+ 
+* Or we could have right-sided or left-sided tests. 
+ E.g. *Left-sided test:*  
+ 
+ $H_0: \mu \geq \mu_0$    
+ $H_a: \mu < \mu_0$     (In $H_a, \mu$ is to the left of $\mu_0$ - left-sided )   
+ 
+The Test Statistic 
+For the test statistic we use the $T$-statistic:
+$$
+T = \frac{\bar X - \mu_0}{ S / \sqrt n}
+$$
+
+Example 
+Do the *oil changing example* from the class notes. (Does it take more of less than 30 minutes for Jiffy-Lube to change your oil.) Let $\mu$ there be the average time it takes these guys to change your oil. Our $H_0$ is $\mu \geq 30$ and $H_1$ is $\mu < 30$. We would like to reject $H_0$. This is a left-sided test. 
+
+We get that the average oil-change time *in this sample* is less than 30, but based on this we can not reject the null. This does not imply that we can reject the null. We care about the variance, too. If the variance is very large, then it may be that in this sample we obtained a small mean just by chance alone.) 
+
+* *Fact:* Under the assumption of normality (i.e. the data come from normal distribution), and under the null hypothesis, we can show that our $T$-statistic follows a $t$-distribution with $n-1$ degrees of freedom $T_{n-1}$. (This is derived from GLRT.)
+
+For the *two-sided test*, $p$-value is computed as $P\ (\ |T_{n-1}| > |T|\ )$; for the *left-sided test:*  $P\ (\ T_{n-1} < T\ )$; for the *right-sided test:* $P\ (\ T_{n-1} > T\ )$. (the sign $<$ or $>$ when computing the $p$-value **always** agrees with the alternative hypothesis. E.g., for the left-sided test, $H_a$ is $\mu < \mu_0$ and we compute the $p$-value based on whether $T_{n-1} < T$).
+
+So in this case, because we have a left-sided test, we get
+$$
+T = \frac{\bar X - \mu_0}{S/\sqrt n} = \frac{\bar X - 30}{S/\sqrt 36} = -3.59
+$$
+$$
+p-\text{value} = P ( T_{35} < -3.59 ) = 0.0005
+$$
+
+This is computed in <code> R </code> as
+```{r}
+oilchange.xbar <- mean( oilchange$V1 )
+oilchange.sSq <- var( oilchange$V1 )
+oilchange.Tstat <- ( oilchange.xbar - 30 )/( sqrt( oilchange.sSq)/sqrt( length(oilchange$V1) ) ) 
+oilchange.pvalue <- pt( oilchange.Tstat, length(oilchange$V1) -1 )
+print(oilchange.Tstat)
+print( oilchange.pvalue )
+```
+  
+For such a small $p$-value we can reject the $H_0$. 
+
+*To recap*, just based on the average being less than 30 here, we could not reject the null hypothesis. We had to use some sort of *standardized score* that also took into account the sample variance. Our standardized score here was the $T$-statistic. Only based on this standardized score were we able to reject the null. 
+
+Testing for the Proportion
+Now we consider discrete data, example 6.4.2 from the notes. (100 patients, 55 imroved when a new drug was administered. Older drug had 50% improvement rate. Is the new drug better than the old one?)  
+
+Let $U$ be the number of patients who improved. It's reasonable to assume that $U$ is Binomial(100, $p$). Here we have discrete data and we do *not* have population mean as such; we are interested in the *proportion* of patients who improved. 
+
+Our hypotheses are: 
+
+$H_0: \; \; \; p \leq 0.5$  
+$H_a: \; \; \; p   >  0.5$  
+
+So here we have a right-sided test. 
+
+We again calculate the *test statistic:*
+$$
+Z = \frac{\hat p - p_0}{\sqrt\frac{p_0(1 - p_0)}{n}}
+$$
+
+Here $\hat p$ is the population proportion - what proportion of the patients improved. It is binomially distributed with variance is $\frac{p_0(1 - p_0)}{n}$ under the null. 
+
+Under the null, $Z$ approximately follows the normal distribution. 
+
+For this right sided test, 
+$$
+p-\text{value} = P\ (\ N(0,1) > z\ )\ = 1 - P\ (\ N(0,1) < z\ )
+$$
+
+Here $\hat p = .55$ so
+$$
+Z = \frac{0.55 - 0.50} {\sqrt \frac{0.5 \; \; 0.5}{100}} = \frac{0.05}{0.05} = 1
+$$
+$$
+p-\text{value} = P\ (\ N(0,1) > 1\ )\ = 1 - P\ (\ N(0,1) < 1\ ) = 0.16
+$$
+
+This is too high. We *fail to reject the null* and conclude that there's no sufficient evidence to show that the new drug is better.
+
+This, of course, doesn't mean that $H_0$ is necessarily true (i.e. it doesn't mean that the old drug is better). We need more evidence to show whether $H_0$ is true or false. For this, we need to collect more data, which may be expensive. The question is *how big of sample size do we need* to conclude one way or another.  
+
+
+
+
+
+
+Sample Size Calculation
+
+On the one hand we would like to control Type I error, on the other hand we want the
+power of the test to be high enough for us to reject the null. I.e. we want Type I erros  $\leq \alpha$ and power $\geq 1 - \beta$ for a given effect size. Effect size: if we want to show that the new drug is @least 10% better than the old drug, that 10% is the effect size. As an example if we want to make sure that the Type I error is $\leq$ 5%, and we have 80% chance that we should reject the null hypothesis, i.e. the power is $\geq 80%$, if we set all these numbers here we must have high enough sample size $n$. So how do we get the sample size?
+
+Again, we have:
+
+ 
+ $H_0: \mu = \mu_0$  vs  
+ $H_a: \mu \neq \mu_0 \; \; \; \; \; \; \; \mu = \mu_0 + \delta$   
+
+
+Our sample statistic was:
+$$
+T = \frac{\bar X - \mu_0}{s/\sqrt n}
+$$
+
+But recall that $s$ was the sample variance in this statistic. But we are doing the sample size calculation here and we don't have the sample size yet, so we assume that
+$\sigma^2$ is known and we use the $Z$ statistic instead:
+
+
+$$
+Z = \frac{\bar X - \mu_0}{\sigma/ \sqrt n}
+$$
+
+The reject region is this:
+$$
+R = \left\{ \frac{\bar X - \mu_0}{\sigma/ \sqrt n} \geq z_{\alpha/2} \right\}
+$$
+  
+Now we need to set the power. If the alternative hypothesis is true, then 
+$$
+1 - \beta = P\  ( R \mid \mu = \mu_0 + \delta) = P\ \left( \frac{\bar X - \mu_0}{\sigma/ \sqrt n} \geq z_{\alpha/2} \ \right)
+$$
+$$
+= P\ \left( \frac{\bar X - (\mu_0 + \delta) + \delta}{\sigma/ \sqrt n} \geq z_{\alpha/2} \ \right) = P\ \left( \mid Z + \frac{\delta}{\sigma/\sqrt n} \mid \ \geq z_{\alpha/2} \right) 
+$$
+$$
+= P\ \left(Z \geq z_{\alpha/2} -  \frac{\delta}{\sigma/\sqrt n}\right) + P\ \left(Z \leq - z_{\alpha/2} -  \frac{\delta}{\sigma/\sqrt n}\right) 
+$$
+
+The second summand here is really small, negligable. Thus:
+$$
+1 - \beta = P\ \left(Z \geq z_{\alpha/2} -  \frac{\delta}{\sigma/\sqrt n}\right)
+$$
+Or 
+$$
+-z_{\beta} = z_{1 - \beta} = z_{\alpha/2} - \frac{\delta}{\sigma/\sqrt n}
+$$
+$$
+\frac{\delta}{\sigma/\sqrt n} = z_{\alpha/2} + z_{\beta}
+$$
+From which
+$$
+\boxed{n = \frac{\sigma^2}{\delta^2} ( z_{\alpha/2} + z_{\beta} )^2}
+$$
+
+Thus if the variance is large, we need a larger sample size. 
+
+ Example 6.4.3
+ 
+ $H_0: \mu = 1500 \; \mu l$  vs  
+ $H_a: \mu \neq 1500 \; \mu l \; \; \; \; \; \; \; \; \; \; \; \;  \sigma^2 = 10 000$   
+
+
+Question: can we detect the difference of $50 \mu l$ when the sample size $n =10$?
+
+What is the power of this test? (set $\alpha = 0.05$)
+
+This is a two-sided test with $\sigma^2$ known we use the $Z$ statistic.
+$$
+1 - \beta = P\ \left( \ \mid \frac{\bar X - \mu_0}{\sigma/ \sqrt n} \mid \geq 1.96 \mid \mu = 1550 \ \right)
+$$
+$$
+= P\ \left( \ \mid \frac{\bar X - 1500 + 50}{\sigma/ \sqrt n} \mid \; \geq 1.96  \; \Big| \;   \mu = 1550 \ \right) = P\ \left( \ \mid Z + \frac{50}{100 \sqrt 10} \mid \geq 1.96 \; \Big| \;  \mu = 1550 \ \right)
+$$
+
+Many ways to calculate this in \texttt{R}:
+```{r}
+pnorm( -1.96, 50*sqrt(10)/100, 1) + 1 - pnorm( 1.96, 50*sqrt(10)/100, 1)
+```
+
+So the power of the test is 0.35. What if we want $1 - \beta$ = 80%. That is, what if  we want to reject the null with 80% probability when it's false? 
+
+
+using the above formula for $n$ we get $n = 32$. With this $n$, recalculate power:
+
+
+Two Population Tests
+
+
+
+\end{document}

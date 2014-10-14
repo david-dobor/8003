@@ -1,0 +1,293 @@
+---
+output: html_document
+---
+### Notes on Hypothesis Testing (Week 7)
+
+From previous discussion... built test statistics, computed the values of these test statistics for given the data, and computed $p$-values - the probability of obtaining a value of that statistic, or something even worse,
+under the null hypothesis.
+
+Now we consider testing for the proportion (or population mean). We start from the
+simple and move to the more complicated. Start with testing for one population mean. 
+
+### Testing for the Population Mean    
+* Two sided test:  
+ 
+ $H_0: \mu = \mu_0$  vs  
+ $H_a: \mu \neq \mu_0$   
+ 
+* Or we could have right-sided or left-sided tests. 
+ E.g. *Left-sided test:*  
+ 
+ $H_0: \mu \geq \mu_0$    
+ $H_a: \mu < \mu_0$     (In $H_a, \mu$ is to the left of $\mu_0$ - left-sided )   
+ 
+#### The Test Statistic 
+For the test statistic we use the $T$-statistic:
+$$
+T = \frac{\bar X - \mu_0}{ S / \sqrt n}
+$$
+
+##### Example 
+Do the *oil changing example* from the class notes. (Does it take more of less than 30 minutes for Jiffy-Lube to change your oil.) Let $\mu$ there be the average time it takes these guys to change your oil. Our $H_0$ is $\mu \geq 30$ and $H_1$ is $\mu < 30$. We would like to reject $H_0$. This is a left-sided test. 
+
+```{r}
+oilchange <- read.csv("http://astro.temple.edu/~zhaozhg/Stat8003/data/speedyoilchange.csv", header=FALSE)
+#plot( density( oilchange$V1 ) )
+oilchange.xbar <- mean( oilchange$V1 )
+print(oilchange.xbar)
+```
+
+We get that the average oil-change time *in this sample* is less than 30, but based on this we can not reject the null. This does not imply that we can reject the null. We care about the variance, too. If the variance is very large, then it may be that in this sample we obtained a small mean just by chance alone.) 
+
+* *Fact:* Under the assumption of normality (i.e. the data come from normal distribution), and under the null hypothesis, we can show that our $T$-statistic follows a $t$-distribution with $n-1$ degrees of freedom $T_{n-1}$. (This is derived from GLRT.)
+
+For the *two-sided test*, $p$-value is computed as $P\ (\ |T_{n-1}| > |T|\ )$; for the *left-sided test:*  $P\ (\ T_{n-1} < T\ )$; for the *right-sided test:* $P\ (\ T_{n-1} > T\ )$. (the sign $<$ or $>$ when computing the $p$-value **always** agrees with the alternative hypothesis. E.g., for the left-sided test, $H_a$ is $\mu < \mu_0$ and we compute the $p$-value based on whether $T_{n-1} < T$).
+
+So in this case, because we have a left-sided test, we get
+$$
+T = \frac{\bar X - \mu_0}{S/\sqrt n} = \frac{\bar X - 30}{S/\sqrt 36} = -3.59
+$$
+$$
+p-\text{value} = P ( T_{35} < -3.59 ) = 0.0005
+$$
+
+This is computed in <code> R </code> as
+```{r}
+oilchange.xbar <- mean( oilchange$V1 )
+oilchange.sSq <- var( oilchange$V1 )
+oilchange.Tstat <- ( oilchange.xbar - 30 )/( sqrt( oilchange.sSq)/sqrt( length(oilchange$V1) ) ) 
+oilchange.pvalue <- pt( oilchange.Tstat, length(oilchange$V1) -1 )
+print(oilchange.Tstat)
+print( oilchange.pvalue )
+```
+  
+For such a small $p$-value we can reject the $H_0$. 
+
+*To recap*, just based on the average being less than 30 here, we could not reject the null hypothesis. We had to use some sort of *standardized score* that also took into account the sample variance. Our standardized score here was the $T$-statistic. Only based on this standardized score were we able to reject the null. 
+
+### Testing for the Proportion
+Now we consider discrete data, example 6.4.2 from the notes. (100 patients, 55 imroved when a new drug was administered. Older drug had 50% improvement rate. Is the new drug better than the old one?)  
+
+Let $U$ be the number of patients who improved. It's reasonable to assume that $U$ is Binomial(100, $p$). Here we have discrete data and we do *not* have population mean as such; we are interested in the *proportion* of patients who improved. 
+
+Our hypotheses are: 
+
+$H_0: \; \; \; p \leq 0.5$  
+$H_a: \; \; \; p   >  0.5$  
+
+So here we have a right-sided test. 
+
+We again calculate the *test statistic:*
+$$
+Z = \frac{\hat p - p_0}{\sqrt\frac{p_0(1 - p_0)}{n}}
+$$
+
+Here $\hat p$ is the population proportion - what proportion of the patients improved. It is binomially distributed with variance is $\frac{p_0(1 - p_0)}{n}$ under the null. 
+
+Under the null, $Z$ approximately follows the normal distribution. 
+
+For this right sided test, 
+$$
+p-\text{value} = P\ (\ N(0,1) > z\ )\ = 1 - P\ (\ N(0,1) < z\ )
+$$
+
+Here $\hat p = .55$ so
+$$
+Z = \frac{0.55 - 0.50} {\sqrt \frac{0.5 \; \; 0.5}{100}} = \frac{0.05}{0.05} = 1
+$$
+$$
+p-\text{value} = P\ (\ N(0,1) > 1\ )\ = 1 - P\ (\ N(0,1) < 1\ ) = 0.16
+$$
+
+This is too high. We *fail to reject the null* and conclude that there's no sufficient evidence to show that the new drug is better.
+
+This, of course, doesn't mean that $H_0$ is necessarily true (i.e. it doesn't mean that the old drug is better). We need more evidence to show whether $H_0$ is true or false. For this, we need to collect more data, which may be expensive. The question is *how big of sample size do we need* to conclude one way or another.  
+
+
+
+
+
+
+### Sample Size Calculation
+
+On the one hand we would like to control Type I error, on the other hand we want the
+power of the test to be high enough for us to reject the null. I.e. we want Type I erros  $\leq \alpha$ and power $\geq 1 - \beta$ for a given effect size. Effect size: if we want to show that the new drug is @least 10% better than the old drug, that 10% is the effect size. As an example if we want to make sure that the Type I error is $\leq$ 5%, and we have 80% chance that we should reject the null hypothesis, i.e. the power is $\geq 80%$, if we set all these numbers here we must have high enough sample size $n$. So how do we get the sample size?
+
+Again, we have:
+
+ 
+ $H_0: \mu = \mu_0$  vs  
+ $H_a: \mu \neq \mu_0 \; \; \; \; \; \; \; \mu = \mu_0 + \delta$   
+
+
+Our sample statistic was:
+$$
+T = \frac{\bar X - \mu_0}{s/\sqrt n}
+$$
+
+But recall that $s$ was the sample variance in this statistic. But we are doing the sample size calculation here and we don't have the sample size yet, so we assume that
+$\sigma^2$ is known and we use the $Z$ statistic instead:
+
+
+$$
+Z = \frac{\bar X - \mu_0}{\sigma/ \sqrt n}
+$$
+
+The reject region is this:
+$$
+R = \left\{ \frac{\bar X - \mu_0}{\sigma/ \sqrt n} \geq z_{\alpha/2} \right\}
+$$
+  
+Now we need to set the power. If the alternative hypothesis is true, then 
+$$
+1 - \beta = P\  ( R \mid \mu = \mu_0 + \delta) = P\ \left( \frac{\bar X - \mu_0}{\sigma/ \sqrt n} \geq z_{\alpha/2} \ \right)
+$$
+$$
+= P\ \left( \frac{\bar X - (\mu_0 + \delta) + \delta}{\sigma/ \sqrt n} \geq z_{\alpha/2} \ \right) = P\ \left( \mid Z + \frac{\delta}{\sigma/\sqrt n} \mid \ \geq z_{\alpha/2} \right) 
+$$
+$$
+= P\ \left(Z \geq z_{\alpha/2} -  \frac{\delta}{\sigma/\sqrt n}\right) + P\ \left(Z \leq - z_{\alpha/2} -  \frac{\delta}{\sigma/\sqrt n}\right) 
+$$
+
+The second summand here is really small, negligable. Thus:
+$$
+1 - \beta = P\ \left(Z \geq z_{\alpha/2} -  \frac{\delta}{\sigma/\sqrt n}\right)
+$$
+Or 
+$$
+-z_{\beta} = z_{1 - \beta} = z_{\alpha/2} - \frac{\delta}{\sigma/\sqrt n}
+$$
+$$
+\frac{\delta}{\sigma/\sqrt n} = z_{\alpha/2} + z_{\beta}
+$$
+From which
+$$
+\boxed{n = \frac{\sigma^2}{\delta^2} ( z_{\alpha/2} + z_{\beta} )^2}
+$$
+
+Thus if the variance is large, we need a larger sample size. 
+
+#### Example 6.4.3
+ 
+ $H_0: \mu = 1500 \; \mu l$  vs  
+ $H_a: \mu \neq 1500 \; \mu l \; \; \; \; \; \; \; \; \; \; \; \;  \sigma^2 = 10 000$   
+
+
+Question: can we detect the difference of $50 \mu l$ when the sample size $n =10$?
+
+What is the power of this test? (set $\alpha = 0.05$)
+
+This is a two-sided test with $\sigma^2$ known we use the $Z$ statistic.
+$$
+1 - \beta = P\ \left( \ \mid \frac{\bar X - \mu_0}{\sigma/ \sqrt n} \mid \geq 1.96 \mid \mu = 1550 \ \right)
+$$
+$$
+= P\ \left( \ \mid \frac{\bar X - 1500 + 50}{\sigma/ \sqrt n} \mid \; \geq 1.96  \; \Big| \;   \mu = 1550 \ \right) = P\ \left( \ \mid Z + \frac{50}{100 \sqrt 10} \mid \geq 1.96 \; \Big| \;  \mu = 1550 \ \right)
+$$
+
+Many ways to calculate this in \texttt{R}:
+```{r}
+pnorm( -1.96, 50*sqrt(10)/100, 1) + 1 - pnorm( 1.96, 50*sqrt(10)/100, 1)
+```
+
+So the power of the test is 0.35. What if we want $1 - \beta$ = 80%. That is, what if  we want to reject the null with 80% probability when it's false? 
+
+
+using the above formula for $n$ we get $n = 32$. With this $n$, recalculate power:
+```{r}
+10000/2500* ( qnorm( 1- 0.05/2) + qnorm( 1- 0.2 ) )^2
+pnorm( -1.96, 50*sqrt(32)/100, 1) + 1 - pnorm( 1.96, 50*sqrt(32)/100, 1)
+```
+
+### Two Population Tests
+Here we have data from two uncorrelated populations
+$$
+H_0: \mu_1 - \mu_2 = \delta_0
+$$  
+\begin{center} vs \end{center}  
+$$
+H_a: \mu_1 - \mu_2 \neq \delta_0 
+$$   
+
+If for these two independent samples the variances are the same, then we pool the variances use the $T$-statistic 
+$$
+T = \frac{\bar y_1 - \bar y_2 - \delta_0}{s_p / \sqrt {\frac{1}{n_1}  + \frac{1}{n_2}}}
+$$
+where $s_p$ is the pooled variance
+$$
+s_p = \frac{(n_1 - 1)s_1^2 + (n_2 - 1)s_2^2}{n_1 + n_2 - 2}
+$$
+
+Here the $T$-statistic has $n_1+n_2-2$ degrees of freedom.
+
+If the variances are not equal, we are *not* able to use the pooled variance. 
+$$
+T = \frac{\bar y_1 - \bar y_2 - \delta_0}{\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}}}
+$$
+
+To calculate the degrees of freedom in this case use Satterthwaite approximation
+$$
+sat = \frac{ \left( \frac{s_1^2}{n_1}+\frac{s_2^2}{n_2} \right)^2} {\frac{\left(\frac{s_1^2}{n_1}\right)^2} { {n_1 -1} } + \frac{\left(\frac{s_2^2}{n_2}\right)^2} { {n_2 -1} } }
+$$
+(conservative estimate is to use the minimal of the two degrees of freedom.)
+
+
+Now, how can we check whether for the two populations the variances are the same? 
+
+
+#### Testing for the equality of variances of the two populations
+
+Use the $F$-test. The following statistic follows the $F$-distribution:
+
+$$
+F = \frac{s_1^2}{s_2^2}
+$$
+with $n_1 - 1, n_2 - 1$ degrees of freedom.
+
+The test with the pooled variance is more powerful.
+
+#### Microarray data (high-throughput data)
+High troughput roughly means that in some experiment we obtain a large number of measurements on a given individual. In classical statistics the opposite is usually the case - for each subject we are interested in estimating one or two parameters; thus the number of parameters is much smaller than the sample size in classical situations. 
+
+Example 6.4.4 We have 102 subjects, $n_1 = 50$ healthy controls and $n_2 = 52$ prostate cancer patients. We run the microarray experiment and for each subject obtain genetic expression measurements. Let $x_j$ be the vector of measurements for individual $j$. In the prostate cancer data, the number of measurements is p = 6033. The task is to identify which genes are significantly didifferently expressed between the control and treatment groups.
+
+
+Let $y_{ijg} \sim N(\mu_{ij}, \sigma_{ij}^2)$ Here $j$ is the indicator between the control group and the patients $j = {1, 2}$, and $i$ is runs through the number of patients in each group $i = 1, 2, \dots, n_j$, and $g$ corresponds to the gene under consideration $1, 2, \dots, 6033$.
+
+Equivalently, we write our model in the following notation:
+
+$$
+y_{ijg} = \mu_{ig} + \epsilon_{ij}  \; \; \; \; \; where \; \; \;  \epsilon_{ij} \sim N(0, \sigma_{ij}^2)
+$$
+
+Our goal is to test:
+
+$$
+H_0: \mu_{1g} = \mu_{2g}
+$$
+$$
+H_0: \mu_{1g} \neq \mu_{2g}
+$$
+
+Thus we have multiple hypotheses here, one hypothesis for each $g$. This is actually a difficult problem. 
+
+We first focus on one specific gene - gene 1720. Here the hypotheses are:
+$$
+H_0: \mu_{1, 1720} = \mu_{2, 1720}
+$$
+$$
+H_0: \mu_{1, 1720} \neq \mu_{2, 1720}
+$$
+
+```{r}
+#### Example 6.4.4
+X <- read.table("http://astro.temple.edu/~zhaozhg/Stat8003/data/prostate_X.csv",sep=",")
+Y <- read.table("http://astro.temple.edu/~zhaozhg/Stat8003/data/prostate_Y.csv",sep=",")
+
+```
+
+
+### Matched Pairs
+
+Here the two samples are not independent as before. Example 6. 4. 5.
+

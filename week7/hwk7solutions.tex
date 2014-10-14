@@ -1,0 +1,184 @@
+ 
+\documentclass[12pt]{article}
+%authors Andrew Schneider, David Dobor
+\usepackage[margin=1in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb}
+ \usepackage{graphicx}
+ \usepackage{multirow}
+\usepackage[scaled]{helvet}
+\usepackage{hyperref}
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\usepackage[T1]{fontenc}
+\usepackage{palatino}
+\usepackage{enumerate}
+%\renewcommand*\familydefault{\sfdefault} %% Only if the base font of the document is to be sans serif
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+
+
+\newcommand{\blditA}{\textbf{\textit{A}}}
+\newcommand{\blditB}{\textbf{\textit{B}}}
+\newcommand{\blditC}{\textbf{\textit{C}}}
+\newcommand{\blditP}{\textbf{\textit{P}}}
+\newcommand{\blditQ}{\textbf{\textit{Q}}}
+\newcommand{\bldI}{\textbf{I}}
+\newcommand{\blditX}{\textbf{\textit{X}}}
+\newcommand{\blditY}{\textbf{\textit{Y}}}
+\newcommand{\blditZ}{\textbf{\textit{Z}}}
+ 
+\newenvironment{theorem}[2][Theorem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{lemma}[2][Lemma]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{exercise}[2][Exercise]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{problem}[2][Problem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{question}[2][Question]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{answer}[2][Answer]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+
+\begin{document}
+ \renewcommand{\arraystretch}{1.3}
+ \renewcommand{\thefootnote}{\fnsymbol{footnote}}	
+ 
+\title{Stat 8003, Homework 7}%replace X with the appropriate number
+\author{Group G: \ \ \texttt{sample( c( "David" , "Andrew",  "Salam" ))}
+\\ %replace with your name
+} %if necessary, replace with your course title
+ 
+\maketitle
+ 
+ %%%%%%%% Question 1 %%%%%%%%%
+ \begin{question}{7.1} We want to know the mean percentage of butterfat in milk produced by a farm by sampling
+multiple loads of milk. Previous records indicate the average percent butterfat in milk is 3.35
+and the standard deviation among loads is 0.15. Now we hope to detect a change of the percent
+butterfat in milk.  
+
+\begin{enumerate}[(a)]
+\item Find the rejection region at the significance level $\alpha = 0.05$;
+\item Suppose 100 loads of milk are sampled. What is the power for the test for detecting a change of the mean to 3.40.
+\item Plot the power as a function of the absolute value of the change of the mean over the standard deviation (which is $ | \mu_1 - \mu_0 | / \sigma$).
+\item Now we hope to detect a change of the percent butterfat in milk to 3.40 with a power 0.8. How many loads do we need to sample?
+\end{enumerate}
+
+\end{question} 
+
+
+  \textbf{\color{TealBlue}\emph{Answer:} } 
+ \begin{enumerate}[(a)]  
+%%%%%%%%%%%% answer to 1a %%%%%%%%%%%%
+\item Let $X$ be the the \texttt{r.v.} that measures the percentage of butterfat in milk. Assume 
+$$
+X \sim N(\mu = 3.35, \sigma = 0.15)
+$$
+Or
+$$
+Z = \frac{X - 3.35}{0.15} \sim N(0,1)
+$$
+The null hypothesis is that there is no change in butterfat; the alternative hypothesis is that there is:
+\begin{align*}
+H_0 : \; \mu &= 3.35 \\
+H_a : \; \mu &\neq 3.35\\
+\end{align*}
+The rejection region of this two sided test is given by 
+\begin{align*}
+R &= \Big\{ |\ Z \ | > z_{\alpha / 2} \Big\}  \\
+&= \Big\{ Z < z_{0.9975} \Big\} \cup \Big\{ Z >  z_{0.0025} \Big\} \\
+&= \Big\{  \frac{X - 3.35}{0.15} < - z_{0.0025} \Big\}   \cup \Big\{  \frac{X - 3.35}{0.15} >  z_{0.0025} \Big\} \\
+&= \Big\{  \ X < 3.35 - 0.15 \times 1.96 \Big\}  \cup \Big\{ \ X >  3.35 + 0.15 \times 1.96 \Big\} \\
+&= \Big\{  \ X < 3.056  \Big\}  \cup \Big\{ \ X > 3.644 \Big\} \\
+\end{align*}
+
+%%%%%%%%%%%% answer to 1b %%%%%%%%%%%%
+\item We want the probability of rejecting the null when $H_a$ is true (specifically, when $\mu = 3.40$). With 100 loads of milk sampled, $\bar X \sim N(\mu, \sigma / \sqrt{ 100})$. 
+
+First, the new rejection region under the null is:
+
+\begin{align*}
+R &= \Big\{  \frac{\bar X - 3.35}{0.015} < - z_{0.0025} \Big\}   \cup \Big\{  \frac{\bar X - 3.35}{0.015} >  z_{0.0025} \Big\} \\
+&= \Big\{  \ \bar X < 3.35 - 0.015 \times 1.96 \Big\}  \cup \Big\{ \ \bar X >  3.35 + 0.015 \times 1.96 \Big\} \\
+&= \Big\{  \ \bar X < 3.3206  \Big\}  \cup \Big\{ \ \bar X > 3.3794 \Big\} \\
+\end{align*}
+
+We can now compute the needed probability of rejecting the null when in fact $\mu = 3.40$:
+\begin{align*}
+1 - \beta &= P ( \ \bar X < 3.3206 \mid \mu = 3.40 ) + P ( \ \bar X > 3.3794 \mid \mu = 3.40 ) \\
+&= P \left( \ \frac{\bar X - 3.40}{0.015} < \frac{3.3206 - 3.40}{0.015} \right) + P \left( \ \frac{\bar X - 3.40}{0.015} > \frac{3.3794 - 3.40}{0.015} \right)  \\
+&= P \left( \ Z <  -5.293333 \right) + P \left( \ Z >  -1.373333 \right) \\
+&= \text{negligible quantitiy} + 1 - P \left( \ Z \leq  -1.373333 \right) \\
+&= 0.9151756
+\end{align*}
+
+
+\item With 100 loads of milk sampled, the distribution of the mean is now $N(\mu, \sigma / \sqrt{ 100})$. Under the given $H_a$ ($\mu = 3.40$), the rejection region is now:
+ \begin{align*}
+R &=  \Big\{  \ \bar X < 3.40 - 0.015 \times 1.96 \Big\}  \cup \Big\{ \ \bar X >  3.40 + 0.015 \times 1.96 \Big\} \\
+&= \Big\{  \ \bar X < 3.3706  \Big\}  \cup \Big\{ \ \bar X > 3.4294 \Big\} \\
+\end{align*}
+
+\item
+
+\end{enumerate}
+\bigskip
+\bigskip
+ %%%%%%%% Question 2 %%%%%%%%%
+ \begin{question}{7.2}  The relative rotation angle between the $\mathbf{L2}$ and $\mathbf{L3}$  lumbar vertebrate is defined as the acute
+angle between posterior tangents drawn to each vertebra on a spinal $\mathbf{X}$-ray. When this angle is too
+large the patient experiences discomfort or pain. Chiropractic treatment of this condition involves
+decreasing this angle by applying (nonsurgical) manipulation or pressure. Harrison et al. (2002)
+propose one such particular treatment. They measured the angle on both pre- and post-treatment
+$\mathbf{X}$-rays from a random sample of 48 patients. At $\alpha = 0.05$, test whether the mean post-treatment
+angle is less than the mean angle prior to treatment.
+
+
+You can load the data using the following command:
+
+
+\texttt{har <- read.table("http://astro.temple.edu/~zhaozhg/Stat8003/data/har1.csv", sep=",", header=TRUE)}
+\end{question} 
+
+  \textbf{\color{TealBlue}\emph{Answer:} } 
+
+\begin{enumerate}[(a)]
+
+%%answer to 2 (a)
+\item 
+\end{enumerate}
+
+
+\bigskip
+\bigskip
+ %%%%%%%% Question 3 %%%%%%%%%
+ \begin{question}{7.3}This problem will guide you to demonstrate the multiplicity issues in multiple hypothesis testing using simulation. Let $X_{ij}$ be the data modeled as
+\begin{equation}
+X_{ij} \stackrel{iid}{\sim} N( \theta_j, 1 ), \; \; i = 1, 2, \dots , n \; \; \; j = 1,2,\dots, p.
+\end{equation}
+
+Consider testing $p$ hypotheses $H_{0j} : \theta_j = 0 \; \; vs H_{1j} : \theta_j \neq 0$ where $j = 1, 2, \dots, p$. Define the family-wise error rate (FWER) as
+$$
+FWER = P\ ( \text{at least one (including one) false rejection} \ ).
+$$
+Set the sample size $n = 50\ $ and $\alpha = 0.05$.
+\begin{enumerate}[(a)]
+\item Set $p = 1, \ \theta_j = 0,\  \forall j$. Generate $X_{ij}$ according to (1) and use $p$-value to test the hypothesis at $\alpha$-level. Replicate this step 1000 times to get the simulated FWER.
+\item  Set $p = 10, \ \theta_j = 0,\  \forall j$. Generate $X_{ij}$ according to (1) and use $p$-value to test 10 hypothesis at $\alpha$-level. Replicate this step 1000 times to get the simulated FWER.
+\item  Set $p = 100, \ \theta_j = 0, \ \forall j$. Generate $X_{ij}$ according to (1) and use $p$-value to test 100 hypothesis at $\alpha$-level. Replicate this step 1000 times to get the simulated FWER.
+\item  Set $p = 100, \ \theta_j = 0, \ \forall j$. Generate $X_{ij}$ according to (1) and use $p$-value to test 100 hypothesis using Bonferroni's correction by setting the significance level at $\alpha / p$ for each hypothesis.  Replicate this step 1000 times to get the simulated FWER.
+
+\end{enumerate}
+
+\end{question} 
+
+
+  \textbf{\color{TealBlue}\emph{Answer:} } 
+ 
+\begin{enumerate}[(a)]
+
+
+\item 
+\end{enumerate}
+\end{document}
+
