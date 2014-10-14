@@ -85,7 +85,7 @@ H_a : \; \mu &\neq 3.35\\
 \end{align*}
 The rejection region of this two sided test is given by 
 \begin{align*}
-R &= \Big\{ |\ Z \ | > z_{\alpha / 2} \Big\}  \\
+\mathcal{R}  &= \Big\{ |\ Z \ | > z_{\alpha / 2} \Big\}  \\
 &= \Big\{ Z < z_{0.975} \Big\} \cup \Big\{ Z >  z_{0.025} \Big\} \\
 &= \Big\{  \frac{X - 3.35}{0.15} < - z_{0.025} \Big\}   \cup \Big\{  \frac{X - 3.35}{0.15} >  z_{0.025} \Big\} \\
 &= \Big\{  \ X < 3.35 - 0.15 \times 1.96 \Big\}  \cup \Big\{ \ X >  3.35 + 0.15 \times 1.96 \Big\} \\
@@ -93,36 +93,43 @@ R &= \Big\{ |\ Z \ | > z_{\alpha / 2} \Big\}  \\
 \end{align*}
 
 %%%%%%%%%%%% answer to 1b %%%%%%%%%%%%
-\item We want the probability of rejecting the null when $H_a$ is true (specifically, when $\mu = 3.40$). With 100 loads of milk sampled, $\bar X \sim N(\mu, \sigma / \sqrt{ 100})$. 
+\item We want the probability of rejecting the null when $H_a$ is true (specifically, when $\mu = 3.40$). With 100 loads of milk sampled, $\bar X \sim N(\mu, \sigma / \sqrt{ 100})$.
+%\footnote{
+%The rejection region for the mean of the 100 samples under $H_0$ is:
+%
+%\begin{align*}
+%\mathcal{R} &= \Big\{  \frac{\bar X - 3.35}{0.015} < - z_{0.025} \Big\}   \cup \Big\{  \frac{\bar X - 3.35}{0.015} >  z_{0.025} \Big\} \\
+%&= \Big\{  \ \bar X < 3.35 - 0.015 \times 1.96 \Big\}  \cup \Big\{ \ \bar X >  3.35 + 0.015 \times 1.96 \Big\} \\
+%&= \Big\{  \ \bar X < 3.3206  \Big\}  \cup \Big\{ \ \bar X > 3.3794 \Big\} \\
+%\end{align*}
+%}
 
-First, the rejection region for the mean of the 100 samples under the null is:
-
+The probability of rejecting $H_0$ when in fact $\mu = 3.40$:
 \begin{align*}
-R &= \Big\{  \frac{\bar X - 3.35}{0.015} < - z_{0.025} \Big\}   \cup \Big\{  \frac{\bar X - 3.35}{0.015} >  z_{0.025} \Big\} \\
-&= \Big\{  \ \bar X < 3.35 - 0.015 \times 1.96 \Big\}  \cup \Big\{ \ \bar X >  3.35 + 0.015 \times 1.96 \Big\} \\
-&= \Big\{  \ \bar X < 3.3206  \Big\}  \cup \Big\{ \ \bar X > 3.3794 \Big\} \\
-\end{align*}
-
-We can now compute the probability of rejecting the null when in fact $\mu = 3.40$:
-\begin{align*}
-1 - \beta &= P ( \ \bar X < 3.3206 \mid \mu = 3.40 ) + P ( \ \bar X > 3.3794 \mid \mu = 3.40 ) \\
-&= P \left( \ \frac{\bar X - 3.40}{0.015} < \frac{3.3206 - 3.40}{0.015} \right) + P \left( \ \frac{\bar X - 3.40}{0.015} > \frac{3.3794 - 3.40}{0.015} \right)  \\
-&= P \left( \ Z <  -5.293333 \right) + P \left( \ Z >  -1.373333 \right) \\
-&= \text{\texttt{(negligible quantity)}} + 1 -  \text{\texttt{pnorm(-1.373333)}}\\
-&= 0.9151756
+1 - \beta &= P\ \left( \ \mathcal{R} \mid \mu = 3.4 \ \right) = P \left( \ \Big| \frac{\bar X - 3.35}{0.015} \Big| > z_{0.025} \ \right)\\
+&= P \ \left( \ \Big| \frac{\bar X - 3.4 + (3.4 - 3.35)}{0.015} \Big| > 1.96 \ \right) \\
+&= P \ \left( \ \Big| Z +\frac{(3.4 - 3.35)}{0.015} \Big| > 1.96 \ \right) \\
+&= P \ \left( \ Z > 1.96 - \frac{(3.4 - 3.35)}{0.015} \right) + P \ \left( \ Z < -1.96 - \frac{(3.4 - 3.35)}{0.015} \ \right) \\
+&= P \ \left( \ Z > -1.373333 \ \right) + \text{\texttt{(negligible quantity)}} \\
+&= 1 -  \text{\texttt{pnorm(-1.373333)}}
 \end{align*}
 $$
 \boxed{\text{power}  = 1 - \beta  = 0.915}
 $$
 
-\item We now we express the power in terms of the change of the mean over the standard deviation ( $ | \mu_1 - \mu_0 | / \sigma$) and plot the result.
+\item We now we express the power generally in terms of the change of the mean over the standard deviation ( $ | \mu_1 - \mu_0 | / \sigma$) and plot the result.
 \begin{align*}
-1 - \beta &= P \left( \ \Big| \frac{\bar X - \mu_1 + (\mu_1 - \mu_0)}{\sigma} \Big| < z_{0.025} \right) \\
-&= P \left( \ \Big|  Z +  \frac{\mu_1 - \mu_0} {\sigma}  \Big| <  1.96 \right) \\
-&= P \left( \ Z > -1.96 -  \frac{ | \mu_1 - \mu_0 | } {\sigma}  \ \right)  + P \left( \ Z < 1.96 -  \frac{ | \mu_1 - \mu_0 | } {\sigma}  \right)  \\
+1 - \beta &= P \left( \ \Big| \frac{\bar X - \mu_1 + (\mu_1 - \mu_0)}{\sigma} \Big| > z_{0.025} \right) \\
+&= P \left( \ \Big|  Z +  \frac{\mu_1 - \mu_0} {\sigma}  \Big| >  1.96 \right) \\
+&= P \left( \ Z > 1.96 -  \frac{ | \mu_1 - \mu_0 | } {\sigma}  \ \right)  + P \left( \ Z < -1.96 -  \frac{ | \mu_1 - \mu_0 | } {\sigma}  \right)  \\
+&= 1 -  \text{\texttt{pnorm(1.96 - xaxis)}} + \text{\texttt{pnorm(-1.96 - xaxis)}} \\
 \end{align*}
 
-\item
+\begin{center}
+\includegraphics[width=10cm, height=8cm, width= 10cm]{power_plot_2c}
+\end{center} 
+
+\item ....
 
 \end{enumerate}
 \bigskip
