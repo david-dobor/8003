@@ -45,7 +45,7 @@
  \renewcommand{\thefootnote}{\fnsymbol{footnote}}	
  
 \title{Stat 8003, Homework 7}%replace X with the appropriate number
-\author{Group G: \ \ \texttt{sample( c( "David" , "Andrew",  "Salam" ))}
+\author{Group G: \ \ \texttt{sample( c( "David" , "Andrew",  "Salam" ) )}
 \\ %replace with your name
 } %if necessary, replace with your course title
  
@@ -60,7 +60,7 @@ butterfat in milk.
 \begin{enumerate}[(a)]
 \item Find the rejection region at the significance level $\alpha = 0.05$;
 \item Suppose 100 loads of milk are sampled. What is the power for the test for detecting a change of the mean to 3.40.
-\item Plot the power as a function of the absolute value of the change of the mean over the standard deviation (which is $ | \mu_1 - \mu_0 | / \sigma$).
+\item Plot the power as a function of the absolute value of the change in the mean over the standard deviation (which is $ | \mu_1 - \mu_0 | / \sigma$).
 \item Now we hope to detect a change of the percent butterfat in milk to 3.40 with a power 0.8. How many loads do we need to sample?
 \end{enumerate}
 
@@ -111,25 +111,32 @@ The probability of rejecting $H_0$ when in fact $\mu = 3.40$:
 &= P \ \left( \ \Big| Z +\frac{(3.4 - 3.35)}{0.015} \Big| > 1.96 \ \right) \\
 &= P \ \left( \ Z > 1.96 - \frac{(3.4 - 3.35)}{0.015} \right) + P \ \left( \ Z < -1.96 - \frac{(3.4 - 3.35)}{0.015} \ \right) \\
 &= P \ \left( \ Z > -1.373333 \ \right) + \text{\texttt{(negligible quantity)}} \\
-&= 1 -  \text{\texttt{pnorm(-1.373333)}}
+&= \text{\texttt{1 - pnorm(-1.373333)}}
 \end{align*}
 $$
 \boxed{\text{power}  = 1 - \beta  = 0.915}
 $$
 
-\item We now we express the power generally in terms of the change of the mean over the standard deviation ( $ | \mu_1 - \mu_0 | / \sigma$) and plot the result.
+\item We now we express the power in terms of the absolute change in the mean over its standard deviation ( $ | \mu_1 - \mu_0 | / \sigma$) and plot the result.
 \begin{align*}
 1 - \beta &= P \left( \ \Big| \frac{\bar X - \mu_1 + (\mu_1 - \mu_0)}{\sigma} \Big| > z_{0.025} \right) \\
 &= P \left( \ \Big|  Z +  \frac{\mu_1 - \mu_0} {\sigma}  \Big| >  1.96 \right) \\
 &= P \left( \ Z > 1.96 -  \frac{ | \mu_1 - \mu_0 | } {\sigma}  \ \right)  + P \left( \ Z < -1.96 -  \frac{ | \mu_1 - \mu_0 | } {\sigma}  \right)  \\
-&= 1 -  \text{\texttt{pnorm(1.96 - xaxis)}} + \text{\texttt{pnorm(-1.96 - xaxis)}} \\
+&= \text{\texttt{1 - pnorm(1.96 - xaxis)}} + \text{\texttt{pnorm(-1.96 - xaxis)}} \\
 \end{align*}
 
 \begin{center}
 \includegraphics[width=10cm, height=8cm, width= 10cm]{power_plot_2c}
 \end{center} 
 
-\item ....
+\item Using the result obtained in class with $1 - \beta = 0.8$, we get:
+\begin{align*}
+n &= \frac{\sigma^2}{\delta^2} (z_{\frac{\alpha}{2}}+ z_{\beta})^2 \\
+&= \frac{0.15^2}{(3.40 - 3.35)^2 }(z_{0.025} + z_{0.2})^2 \\
+\end{align*}
+$$
+\boxed{n = 71}
+$$
 
 \end{enumerate}
 \bigskip
@@ -143,26 +150,50 @@ propose one such particular treatment. They measured the angle on both pre- and 
 $\mathbf{X}$-rays from a random sample of 48 patients. At $\alpha = 0.05$, test whether the mean post-treatment
 angle is less than the mean angle prior to treatment.
 
-
-You can load the data using the following command:
-
-
-\texttt{har <- read.table("http://astro.temple.edu/~zhaozhg/Stat8003/data/har1.csv", sep=",", header=TRUE)}
+%
+%You can load the data using the following command:
+%
+%
+%\texttt{har <- read.table("http://astro.temple.edu/~zhaozhg/Stat8003/data/har1.csv", sep=",", header=TRUE)}
 \end{question} 
 
   \textbf{\color{TealBlue}\emph{Answer:} } 
 
-\begin{enumerate}[(a)]
+\bigskip
+%%answer to 2 
+We are comparing the means of pre- and post-treatment angles. 
+Let the null hypothesis be that there is no change in the mean angle between pre- and post-treatments. We are testing for the left-sided alternative that there's  a decrease in the angle.  
+\begin{align*}
+H_0 : \; \; \mu_{\text{post}} = \mu_{\text{pre}}  \\
+H_a:  \; \; \mu_{\text{post}} < \mu_{\text{pre}}  \\
+\end{align*}
+We first check whether the variances of the two groups are equal ($\sigma_{\text{post}} = \sigma_{\text{pre}} $) using the $F$-test. 
 
-%%answer to 2 (a)
-\item 
-\end{enumerate}
+The $F$-statistic with 47 and 47 degrees of freedom returned by the $F$-test is 1.3369 and the $p$-value is 0.1615073. This $p$-value is too high offering us little evidence that the variances are different.  We thus \emph{accept} the hypothesis that the variances of the two groups are equal.
 
+%We next proceed with the $T$-test. Using the notation $\bar y_{\text{pre}}$ and $\bar y_{\text{post}}$ for the sample means of the two groups  and $s_p$ for the pooled variance, we compute the following $T$-statistic with 47+47-2 degrees of freedom:
+%\begin{align*}
+%T = \frac{\bar y_{\text{pre}} - \bar y_{\text{post}} }{s_p\  /\  \sqrt{\frac{1}{48} + \frac{1}{48}}}
+%\end{align*}
+
+We use \texttt{R}'s paired T-test to see whether the mean post-treatment
+angle is less than the pre-treatment mean angle:
+\begin{verbatim}
+t.test( har$Post, har$Pre, var.equal=TRUE, 
+             alternative="less", paired=TRUE)
+\end{verbatim}
+
+This outputs \texttt{ p-value = 0.0004353} and we therefore \emph{reject} the null hypothesis that the means are equal.
+\bigskip
+$$
+\boxed{ \text{ Accept} \ H_1: \text{The post-treatment mean is smaller } }
+$$
+ 
 
 \bigskip
 \bigskip
  %%%%%%%% Question 3 %%%%%%%%%
- \begin{question}{7.3}This problem will guide you to demonstrate the multiplicity issues in multiple hypothesis testing using simulation. Let $X_{ij}$ be the data modeled as
+ \begin{question}{7.3}This problem will guide you in demonstrating the multiplicity issues in multiple hypothesis testing using simulation. Let $X_{ij}$ be the data modeled as
 \begin{equation}
 X_{ij} \stackrel{iid}{\sim} N( \theta_j, 1 ), \; \; i = 1, 2, \dots , n \; \; \; j = 1,2,\dots, p.
 \end{equation}
@@ -181,14 +212,33 @@ Set the sample size $n = 50\ $ and $\alpha = 0.05$.
 \end{enumerate}
 
 \end{question} 
-
-
   \textbf{\color{TealBlue}\emph{Answer:} } 
- 
-\begin{enumerate}[(a)]
+  \bigskip
+  
+   To answer this question,  we wrote an \texttt{R} function that we use for parts (a) through (d). This function tests any number of hypotheses on a batch of 50 random numbers drawn from the standard normal distribution, where each hypothesis being tested is whether the mean of these 50 numbers equals zero, at a specified level of significance $\alpha$ (please see attached code for details). 
+   
+  Letting ${X_1, X_2, \dots, X_{n =50}}$ be a random sample from a $N(\theta, 1)$ population,
+we reject $H_0 : \theta = 0$ in favor of $H_1 : \theta \neq 0$ whenever 
+ $$
+ | Z | = \Big| \frac{\bar X - \theta}{ 1 / \sqrt n} \Big| = \sqrt {50}\  | \bar X | \geq z_{0.025} = 1.96, 
+ $$
+ i.e. whenever
+ $$
+ \{ \bar X  \leq - 0.27719 \} \cup \{ \bar X \geq 0.27719 \} .
+ $$
 
 
-\item 
+\begin{enumerate}[(a)]  
+\item We first test a single hypothesis $H_0 : \theta = 0$ on one batch of 50 standard normals and \emph{accept} it. 
+
+We then repeat this step 1000 times and get the result that about \fbox{0.044} of these hypotheses are rejected. (Of course this number varies with each run of the simulation, but it remains close to 0.05, as expected.)
+
+\item We now test 10 hypotheses for each of the 1000 simulations. For each simulation run, we determine whether any of the 10 hypotheses have been rejected. Whenever at least one of the hypotheses is rejected, it contributes to the family wise error rate (FWER). 
+
+At the end of this process, we find that \fbox{FWER = 0.39} - roughly a ten-fold increase from the result in part (a). (Again, this number varies slightly from one run to another).
+\item We rerun part (b), this time with 100 hypotheses and find that the \fbox{FWER shoots up to 0.995}.
+\item Finally, using the suggested Bonferroni's correction, we set $\alpha = 0.05/100$ and rerun part (c). We see that we are now \fbox{down to FWER = 0.033}.
+
 \end{enumerate}
 \end{document}
 
