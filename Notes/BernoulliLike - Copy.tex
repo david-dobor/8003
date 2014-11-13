@@ -1,0 +1,65 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+
+\begin{document}
+\begin{center} 
+               David Dobor 
+\end{center} 
+
+\begin{center} 
+               \section*{Bernoulli \texttt{pmf} and its Likelihood}
+\end{center} 
+Most stat textbooks define Bernoulli r.v. as:
+\[
+X = 
+\begin{cases}
+  1  & \text{with probability} \; \theta \\
+  0  & \text{with probability} \; 1 - \theta \\
+\end{cases}
+\]
+
+
+Then its \texttt{pmf} is simply given by 
+$$
+p_X (x) = \theta^x (1 - \theta)^{1 - x}
+$$
+
+And the likelihood function given the observed values of $X = {x_1, x_2, \dots x_n}$ is simply
+$$
+L(\theta ; x ) = \theta^{\ \sum x_i} \; (1 - \theta)^{n - \sum x_i}
+$$
+
+In general, for a \emph{shifted Bernoulli}, i.e. when $X$ takes on the values not 0 or 1, but 
+$$
+X = 
+\begin{cases}
+  a & \; \; \text{with probability} \; \theta \\
+  b & \; \; \text{with probability} \; 1 - \theta \\
+\end{cases}
+$$
+
+
+Then its easy to show that 
+$$
+p_X (x) = \theta^{(x - b)/(a - b)} \; (1 - \theta)^{(a - x) / (a - b)}
+$$
+
+And thus 
+$$
+L(\theta ; x ) = \theta^{(\sum x_i - nb) / (a -b)} \; (1 - \theta)^{(na - \sum x_i) / (a -b)}
+$$
+
+\paragraph{Example:}
+ $X$ is a discrete random variables with $P(X = 1) = \theta$ and $P(X =
+2) = 1 -\theta$. Three independent observations of $X$ are made: $x_1 = 1;  x_2 = 2;  x_3 = 2$.
+
+Write down the likelihood:
+\begin{align*}
+L(\theta ; x ) & = \theta^{(1 + 2 + 2 - 3 \times 2) / (1 -2)}  \ (1 - \theta)^{(3 \times 1 - (1 + 2 + 2)) / (1 - 2)} \\
+&= \theta  \ (1 - \theta)^2
+\end{align*}
+
+(It's easy to check that this function is maximized at $\frac{1}{3}  = \hat \theta$, the \texttt{MLE} estimate of $\theta$.)
+
+\end{document}
+This is never printed

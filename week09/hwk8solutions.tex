@@ -1,0 +1,383 @@
+ 
+\documentclass[12pt]{article}
+%authors Andrew Schneider, David Dobor
+\usepackage[margin=1in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb}
+ \usepackage{graphicx}
+  \usepackage{listings}
+ \usepackage{multirow}
+\usepackage[scaled]{helvet}
+\usepackage{hyperref}
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\usepackage[T1]{fontenc}
+\usepackage{palatino}
+\usepackage{enumerate}
+%\renewcommand*\familydefault{\sfdefault} %% Only if the base font of the document is to be sans serif
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+
+
+\newcommand{\blditA}{\textbf{\textit{A}}}
+\newcommand{\blditB}{\textbf{\textit{B}}}
+\newcommand{\blditC}{\textbf{\textit{C}}}
+\newcommand{\blditP}{\textbf{\textit{P}}}
+\newcommand{\blditQ}{\textbf{\textit{Q}}}
+\newcommand{\bldI}{\textbf{I}}
+\newcommand{\blditX}{\textbf{\textit{X}}}
+\newcommand{\blditY}{\textbf{\textit{Y}}}
+\newcommand{\blditZ}{\textbf{\textit{Z}}}
+ 
+\newenvironment{theorem}[2][Theorem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{lemma}[2][Lemma]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{exercise}[2][Exercise]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{problem}[2][Problem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{question}[2][Question]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{answer}[2][Answer]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+\begin{document}
+\lstset{ %
+  backgroundcolor=\color{white},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}
+  basicstyle=\footnotesize,        % the size of the fonts that are used for the code
+  breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
+  breaklines=true,                 % sets automatic line breaking
+  captionpos=b,                    % sets the caption-position to bottom
+  commentstyle=\color{mygreen},    % comment style
+  deletekeywords={...},            % if you want to delete keywords from the given language
+  escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+  extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
+  %frame=single,                    % adds a frame around the code
+  keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+  keywordstyle=\color{blue},       % keyword style
+  language=R,                 % the language of the code
+  morekeywords={*,...},            % if you want to add more keywords to the set
+  numbers=none,                    % where to put the line-numbers; possible values are (none, left, right)
+  numbersep=5pt,                   % how far the line-numbers are from the code
+  numberstyle=\tiny\color{mygray}, % the style that is used for the line-numbers
+  rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
+  showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+  showstringspaces=false,          % underline spaces within strings only
+  showtabs=false,                  % show tabs within strings adding particular underscores
+  %stepnumber=2,                    % the step between two line-numbers. If it's 1, each line will be numbered
+  stringstyle=\color{mymauve},     % string literal style
+  tabsize=2,                       % sets default tabsize to 2 spaces
+  title=\lstname                   % show the filename of files included with \lstinputlisting; also try caption instead of title
+}
+ \renewcommand{\arraystretch}{1.3}
+ \renewcommand{\thefootnote}{\fnsymbol{footnote}}	
+ 
+\title{Stat 8003, Homework 8}%replace X with the appropriate number
+\author{Group G%: \ \ \texttt{sample( c( "David" , "Andrew",  "Salam" ) )}
+\\ %replace with your name
+} %if necessary, replace with your course title
+ 
+\maketitle
+ 
+ %%%%%%%% Question 1 %%%%%%%%%
+ \begin{question}{8.1} 
+ Let $ X_1, X_2, \cdots, X_n$ be a random sample from an exponential distribution with the density function
+ $$
+ f(x | \theta) = \theta \  \mathrm{exp}(-\theta x)
+ $$
+ the observed data are the following: 
+      \begin{center}
+                        \texttt{1.07   0.88   0.66   0.55   1.15   0.65   3.45   3.55   3.51   0.48} \\
+      \end{center}
+\begin{enumerate}[(a)]
+\item Find an exact pivot;
+\item Use the pivot to construct the 95\% confidence interval for $\theta$;
+\item Apply your interval to this data set.
+\end{enumerate}
+
+\end{question} 
+
+    \textbf{\color{TealBlue}\emph{Answer:} } 
+
+\begin{enumerate}[(a)]
+\item $\sum_{i=1}^{n} X_i$ is then Gamma distributed  $S \sim Gamma(n, \frac{1}{\theta})$\footnote{In this parametrization, the random variable with pdf 
+$
+f(t | n, \theta) = \frac{1}{\Gamma(n)}   \theta  \left( t\theta\right)^{n - 1}   \mathrm{e}^{-t\theta}
+$ is said to be Gamma$(n, 1/\theta)$ distributed. I.e., $\theta$ is the rate parameter and $1/\theta$ is the scale parameter. This is the parametrization we used in class, only with $1/\beta$ in place of this $\theta$.}\\
+\fbox{$\theta \sum_{i=1}^{n} X_i$} is then Gamma distributed with parameters $(n, 1)$. Since this distribution is independent of $\theta$, it can be used as a pivot. 
+
+\item \fbox{$2 \theta \sum_{i=1}^{n} X_i$} is then also a pivot and Gamma$(n, 2)$ distributed, or \fbox{$\chi^2_{2n}$} distributed.  We choose to construct a non-symmetric 95\% confidence interval (C.I.) as follows\footnote{Other ways of constructing this C.I. are possible.}:
+\begin{align*}
+0 .95 &= P\left(\chi^2_{2n, 0.025} \leq 2 \theta \sum_{i=1}^{n} X_i \leq \chi^2_{2n, 0.975}\right),\\
+\end{align*}
+or (since $\sum X_i$ is positive)
+\begin{align*}
+\left( \frac{\chi^2_{2n, 0.025} }{2 \sum_{i=1}^{n} X_i} \leq  \theta  \leq  \frac{\chi^2_{2n, 0.975} }{2\sum_{i=1}^{n} X_i} \right).
+\end{align*}
+
+
+\item Thus $2 \theta \sum_{i=1}^{10} X_i$ is $\chi^2_{20}$ distributed. Applying this to the data gives
+
+\begin{align*}
+\left( \frac{\chi^2_{20, 0.025} }{2 \sum_{i=1}^{n} X_i} \leq  \theta  \leq  \frac{\chi^2_{20, 0.975} }{2\sum_{i=1}^{n} X_i} \right) 
+\end{align*}
+
+\begin{center}
+\boxed{$$\left[\  0.3,  1.07 \ \right] $$}
+\end{center}
+\end{enumerate}
+
+\bigskip
+\bigskip
+ %%%%%%%% Question 2 %%%%%%%%%
+ \begin{question}{8.2}  Consider an i.i.d. sample of random variables with density function
+ $$
+ f(x | \sigma) = \frac{1}{2\sigma} \mathrm{exp}(-\frac{|x|}{\sigma})
+ $$
+ Use the approximate pivot method to construct a $100(1 - \alpha)\%$ confidence interval for $\sigma$.
+\end{question} 
+
+  \textbf{\color{TealBlue}\emph{Answer:} } 
+
+\bigskip
+%%answer to 2 
+Let $X$ be distributed according to the above \texttt{pdf}. Then\footnote{We obtained these results in homework 4}:
+\begin{align*}
+\mathrm{E}\ X &= 0\\
+\mathrm{E} \ X^2 &= 2 \sigma^2\\
+\mathrm{Var}(X) &= 2 \sigma^2 - 0^2 \\
+&=  2 \sigma^2 \\
+\mathrm{std} (X) &=\sqrt2 \sigma.
+\end{align*}
+Asymptotically,
+\begin{align*}
+\frac{\bar X - \mathrm{E}\ \bar X} {\mathrm{std} (\bar X)}  \sim N(0, 1),
+\end{align*}
+so that 
+\begin{align*}
+\frac{\bar X - \frac{1}{n} \cdot 0} {(1/\sqrt n) \cdot \sqrt 2 \sigma}  = \sqrt{\frac{n}{2}} \frac{\bar X} {\sigma} \sim N(0, 1).
+\end{align*}
+Then
+\begin{align*}
+-z_{\alpha/2} \leq  \sqrt{\frac{n}{2}} \bar X \frac{1} {\sigma} \leq z_{\alpha/2} \\
+-z_{\alpha/2} \sqrt{\frac{2}{n}}\frac{1}{\bar X} \leq \frac{1} {\sigma}  \leq z_{\alpha/2} \sqrt{\frac{2}{n}}\frac{1}{\bar X}
+\end{align*}
+Therefore, the $100(1 - \alpha)\%$ confidence interval for $\sigma$ is given by
+\begin{align*}
+\sigma \in \left( -\infty,  -\sqrt{\frac{n}{2}} \frac{\bar X }{z_{\alpha/2 }}\right)  \cup \left(\sqrt{\frac{n}{2}} \frac{\bar X }{z_{\alpha/2 }}, \infty \right) 
+\end{align*}
+\bigskip
+\bigskip
+ %%%%%%%% Question 3 %%%%%%%%%
+ \begin{question}{8.3} A sample of students from an introductory psychology class were polled regarding 
+ the number
+of hours they spent studying for the last exam. All students anonymously submitted the number
+of hours on a 3 by 5 card. There were 24 individuals in the one section of the course polled. The
+data was used to make inferences regarding the other students taking the course. There data are
+below:
+\begin{verbatim}
+  4.5   7.5   22    9    7   10.5   14.5  15    9
+  19    9     3.5   8    11   2.5    5    9     8.5 
+  7.5   18    20   14    20   8
+\end{verbatim}
+\begin{enumerate}[(a)]
+\item Obtain a confidence interval based on central limit theorem;
+\item Obtain a confidence interval based on $T$-distributions;
+\item Obtain a confidence interval based on bootstrapping with $B=10,000.$
+\end{enumerate}
+
+\end{question} 
+
+
+  \textbf{\color{TealBlue}\emph{Answer:} } 
+\bigskip
+%%answer to 3 
+\begin{enumerate}[(a)]
+\item Let $X$ be the number of hours spent on studying for the exam. We are looking for the confidence interval for $\mu$ - the average number of hours spent on studying for the exam.  Based on CLT
+\begin{align*}
+\frac{\bar X - \mu} {\sigma / \sqrt n}   \xrightarrow{\mathfrak{D}}  N(0, 1).
+\end{align*}
+
+The  $100(1 - \alpha)\%$ confidence interval for $\mu$ is then
+\begin{align*}
+\bar X - z_{\frac{\alpha}{2}} \frac{s}{\sqrt n}  \leq \mu \leq \bar X + z_{\frac{\alpha}{2}} \frac{s}{\sqrt n} 
+\end{align*}
+
+Where we use the sample standard deviation $s$ for an estimate of $\sigma$\footnote{
+For example, if $\alpha = 0.05$, C.I. is given by $\left[8.676935 , 13.1564\right]$.
+}. 
+
+
+\item Similarly, using the $t_{23}$-distribution\footnote{For example, if $\alpha = 0.05$, C.I. is given by $\left[8.552726 , 13.28061\right]$. },
+\begin{align*}
+\bar X - t_{\frac{\alpha}{2}} \frac{s}{\sqrt n}  \leq \mu \leq \bar X + t_{\frac{\alpha}{2}} \frac{s}{\sqrt n} 
+\end{align*}
+
+\item To use the bootstrap method we randomly select $N = 24$ elements with replacement from our sample set. We do this $B = 10,000$ times, taking the mean, $\mu_i^B$ each time. Then we can find a $(1-\alpha)$ confidence interval for $\mu$ by letting $\hat \mu = \bar X$ ,  $V^B(\hat \mu ) = $ the sample variance of $\hat{\mu}_j^B$. Then:
+$$\hat \mu - z_{\frac{\alpha}{2}}\sqrt{V^B(\hat \mu)} \leq \mu \leq  \hat \mu + z_{\frac{\alpha}{2}}\sqrt{V^B(\hat \mu)}$$
+
+And our CI for $\mu$ is given by 
+$$\Big[ \hat \mu - z_{\frac{\alpha}{2}}\sqrt{V^B(\hat \mu)} ,  \hat \mu + z_{\frac{\alpha}{2}}\sqrt{V^B(\hat \mu)}\Big]$$
+
+We could write our own function in R to compute this, or we could make use of the \textit{bootstrap} library, and compute this as follows (here we let $\alpha = 0.05$):
+
+\begin{lstlisting}
+
+  library(bootstrap)
+  mu.boot <- bootstrap(x, nboot=10000,theta=mean)
+  conf.int = quantile(mu.boot$thetastar,c(.025,.975))
+
+\end{lstlisting}
+
+For example, in one trial, we got a C.I. of $\left[8.79, 13.12\right]$ for $\alpha = 0.05$\footnote{As expected, our confidence intervals in part (c) tended to be tighter than the ones obtained in parts (a) or (b).}.
+\end{enumerate}
+
+\bigskip
+\bigskip
+ %%%%%%%% Question 4 %%%%%%%%%
+ \begin{question}{8.4} The Poisson distribution has been used by traffic engineers as a model for light traffic, based
+on the rationale that if the rate is approximately constant and the traffic is light (so the individual
+cars move independently of each other), the distribution of counts of cars in a given time interval
+or space area should be nearly Poisson. The following table shows the number of right turns during
+300 3-min intervals at a specific intersection.\\
+
+
+\begin{tabular}{ l c }
+\hline
+n & Frequency\\
+\hline
+0 & 14\\
+1 & 30\\
+2 & 36\\
+3 & 68\\
+4 & 43\\
+5 & 43\\
+6 & 30\\
+7 & 14\\
+8 & 10\\
+9 & 6\\
+10 & 4\\
+11 & 1\\
+12 & 1\\
+13+ & 0\\
+\end{tabular}
+
+\begin{enumerate}[(a)]
+\item Use the pivot method to construct a $(1 - \alpha)$ confidence interval of the rate;
+\item Use variance stabilization method to construct a $(1 - \alpha)$ confidence interval of the rate;
+\item Plug in the data and calculate the 95\% CI by both methods. Which one do you prefer?
+\end{enumerate}
+\end{question}
+
+
+%%%%%%%%%%%%%%%%%% answer to 4 %%%%%%%%%%%%%%%%%%
+    \textbf{\color{TealBlue}\emph{Answer:} } 
+    
+    
+\bigskip
+Let $X_1, X_2, \cdots, X_n$ be Poisson($\lambda$) distributed.  Consider the \texttt{MLE} estimate of $\lambda$:
+\begin{align*}
+\hat \lambda = \frac{\sum_i X_i}{n} = \bar X
+\end{align*}
+Then it's easily seen that 
+\begin{align*}
+\mathrm{E} \hat \lambda &= \lambda \\
+\mathrm{Var}(\hat \lambda) &= \frac{1}{n} \lambda
+\end{align*}
+By \texttt{CLM}
+ \begin{align*}
+\frac{\bar X - \lambda} {\sqrt{\lambda /  n}}  \xrightarrow{\mathfrak{D}}  N(0, 1).
+\end{align*}
+This expression can be used as a pivot quantity for part (a):
+
+\begin{enumerate}[(a)]
+\item 
+\begin{align*}
+-z_{\alpha/2} \leq  \frac{\bar X - \lambda}{\sqrt{\lambda /  n}}   \leq z_{\alpha/2} \\
+\end{align*}
+To isolate $\lambda$, we may consider solving the resulting quadratic equation (in $\sqrt{\lambda}$). 
+
+Alternatively, we can proceed as in class (where we used the $\hat p$ estimate of the Bernoulli parameter to estimate the variance of a sum of  Bernoullis. I.e., we used $n \hat p (1 - \hat p)$ instead of $ n p (1 -  p)$ for the variance.)
+
+Thus we use  $\bar X$ in place of $\lambda$ in the denominator:
+\begin{align*}
+-z_{\alpha/2} \leq  \frac{\bar X - \lambda}{\sqrt{\bar X /  n}}   \leq z_{\alpha/2} \\
+\end{align*}
+Then our   $100(1 - \alpha)\%$ confidence interval is given by:
+\begin{align*}
+\bar X - z_{\frac{\alpha}{2}} \sqrt{\bar X /  n}  \leq \lambda \leq \bar X + z_{\frac{\alpha}{2}}\sqrt{\bar X /  n}
+\end{align*}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%      4b        %%%%%%%%%%%%%%%%%%%%%%%%%%
+\item Let 
+\begin{align*}
+g(x)& = \int_0^x \frac{1} {\sqrt{\lambda / n} }\  d\lambda \\
+&=\sqrt n \int_0^x \frac{1} {\sqrt{\lambda} }\  d\lambda \\
+&=2\sqrt {n x}
+\end{align*}
+
+According to \texttt{CLM}
+
+$$\sqrt{\frac{n}{\lambda}} (\hat \lambda - \lambda) \xrightarrow{\mathfrak{D}} N(0,1).$$
+
+Using the above Variance Stabilizing Transform $g(\cdot)$ we have that by the delta method
+$$\frac{\sqrt{n/\lambda} (g(\hat \lambda)  - g(\lambda))}{|g'(\lambda)|} \xrightarrow{\mathfrak{D}}  N(0,1).$$
+
+or
+\begin{align*}
+\frac{\sqrt{n/\lambda} (2\sqrt{n \hat \lambda } - 2\sqrt{n \lambda})}{\sqrt{n/\lambda}} \sim N(0,1) \\
+\\
+2\sqrt{n \hat \lambda} - 2\sqrt{n \lambda} \sim N(0,1)
+\end{align*}
+
+i.e., 
+\begin{align*}
+-z_{\alpha/2} \leq  2\sqrt{n}(\sqrt{ \bar X} - \sqrt{\lambda})   \leq z_{\alpha/2} \\
+\\
+\sqrt{ \bar X}  - \frac{z_{\alpha/2}}{2\sqrt n}  \leq  \sqrt{\lambda}   \leq \sqrt{ \bar X}  + \frac{z_{\alpha/2}}{2\sqrt n}
+\end{align*}
+
+Assuming $\sqrt{ \bar X } \geq \frac{z_{\alpha/2}}{2\sqrt n}$ and $\lambda \geq 0$, as is the case here, we can then write this as
+$$\Big(\sqrt{ \bar X}  - \frac{z_{\alpha/2}}{2\sqrt n}\Big)^2  \leq  \lambda   \leq \Big(\sqrt{ \bar X} + \frac{z_{\alpha/2}}{2\sqrt n}\Big)^2$$
+
+and our confidence interval is $$\Big[\Big(\sqrt{ \bar X}  - \frac{z_{\alpha/2}}{2\sqrt n}\Big)^2 ,  \Big(\sqrt{ \bar X}  + \frac{z_{\alpha/2}}{2\sqrt n}\Big)^2\Big]$$
+
+\item
+
+Here is a comparison of parts (a) and (b). The lengths of the coverage intervals are the same for both methods.
+
+\begin{lstlisting}
+# given data:
+n = c(0:13)
+freq = c(14, 30, 36, 68, 43, 43, 30, 14, 10,  6,  4,  1,  1,  0)
+alpha = 0.05
+
+# estimate of the poisson parameter:
+X.bar = sum( n * freq ) / sum(freq)   #ans:3.893333
+
+#part(a) - C.I. based on the pivot method
+lb.pivot <- X.bar - sqrt( X.bar ) * qnorm( 1-alpha/2 ) / sqrt(sum( freq ))
+ub.pivot <- X.bar + sqrt( X.bar ) * qnorm( 1-alpha/2 ) / sqrt(sum( freq ))
+   ### ans: C.I.pivot = [3.670054, 4.116613]
+
+#part(b) - C.I. based on variance stabilization
+lb.vst <- (sqrt( X.bar ) - qnorm( 1-alpha/2 )/(sqrt( sum( freq ) )*2) )^2 
+ub.vst <- (sqrt( X.bar ) + qnorm( 1-alpha/2 )/(sqrt( sum( freq ))*2 ) )^2  
+   ### ans: C.I.vst = [3.673255, 4.119814]
+
+# the lengths of the coverage intervals turn out to be the same:
+ub.vst - lb.vst      #ans: 0.4465584
+ub.pivot - lb.pivot  #ans: 0.4465584
+\end{lstlisting}
+
+Given that the intervals are the same size, we prefer the method which made fewer assumptions. For the pivot method, we estimated the variance based on the mean, so we prefer the VST method.
+\end{enumerate}
+  
+\end{document}
+
